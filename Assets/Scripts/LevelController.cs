@@ -135,9 +135,12 @@ public class LevelController : MonoBehaviour {
 		for (int i=0; i<doubles.Length; i++)
 			if (doubles [i].GetComponent<CharacterController> ().GetNumber () > number)
 				Destroy (doubles [i]);
-		for (int i=chronology.chronology.Count-1; i>=number; i--)
+		for (int i=chronology.chronology.Count-1; i>number; i--)
+		{
 			chronology.chronology.RemoveAt(i);
-		for (int i=chronology.chronology[number-1].sequence.Count-1; i>paradox.GetActNumber(); i--)
+			appearances.RemoveAt(i);
+		}
+		for (int i=chronology.chronology[number].sequence.Count-1; i>paradox.GetActNumber(); i--)
 			chronology.chronology [number].sequence.RemoveAt (i);
 		paradox.underControl = true;
 	}
