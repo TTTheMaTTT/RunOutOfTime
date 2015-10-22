@@ -75,7 +75,6 @@ public class CharacterController : MonoBehaviour
 			if ((lvlController.ChronoAction(number,actionNumber)=="Jump")&&(grounded))
 			{
 				rigid.AddForce (new Vector2 (0f, jumpForce));
-				actionNumber++;
 			}
 			else if ((lvlController.ChronoAction(number,actionNumber)=="Return"))
 				Destroy(gameObject,1f);

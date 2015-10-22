@@ -7,7 +7,7 @@ using System.IO;
 
 public class LevelController : MonoBehaviour {
 
-	private float eps=1.5f;
+	private float eps = 0.5f, timeEps=0.01f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
 	private bool begin;
 
 	public float refreshTime=1f;
@@ -28,7 +28,7 @@ public class LevelController : MonoBehaviour {
 	void Start () 
 	{
 		begin = true;
-
+		timer = 0;
 		datapath = Application.dataPath + "/Saves/SavedData" + Application.loadedLevel + ".xml";	
 		if (File.Exists (datapath)) {	// если файл сохранения уже существует
 			chronology = Serializator.DeXml (datapath);  // считываем state оттуда
@@ -70,6 +70,14 @@ public class LevelController : MonoBehaviour {
 		{
 			CreateDouble(chronology.chronology.Count);
 		}
+
+		if (Input.GetButtonDown("Fire2"))//удаление файла сохранения. Вскоре этот код будет убран в более подходящее место
+		{
+			File.Delete(datapath);
+			chronology.chronology.Clear();
+			Application.LoadLevel (Application.loadedLevel);
+		}
+
 	}
 
 	void SetDefaultChronology()//С этого начинается летопись хронология
@@ -93,7 +101,10 @@ public class LevelController : MonoBehaviour {
 
 	public bool CompareTimer(int number, int actNumber)//Функция проверки, не настало ли время для перехода к новому записанному событию
 	{
-		return (timer>chronology.chronology[number].sequence[actNumber].time);
+		if (actNumber >= chronology.chronology [number].sequence.Count)
+			return false;
+		else 
+			return (Mathf.Abs(timer-chronology.chronology[number].sequence[actNumber].time)<timeEps);
 	}
 
 	public string ChronoAction(int number, int actNumber)//Так дубль узнаёт, какое действие ему совершить
@@ -110,7 +121,7 @@ public class LevelController : MonoBehaviour {
 		{
 			doubler.GetComponent<CharacterController> ().underControl = true;
 			currentSequence = new TimeSequence ();
-			currentSequence.AddEvent (new TimeEvent (0f, new Vector2 (0f, 0f), "Appear"));
+			currentSequence.AddEvent (new TimeEvent (timer, new Vector2 (0f, 0f), "Appear"));
 			chronology.AddSequence (currentSequence);
 			begin = false;
 		}
@@ -118,9 +129,10 @@ public class LevelController : MonoBehaviour {
 			doubler.GetComponent<CharacterController> ().underControl = false;
 	}
 
+
 	IEnumerator Restart()//Отправиться в прошлое
 	{
-		TimeEvent tEvent = new TimeEvent(chronology.chronology.Count-1, new Vector2(0f,0f),"Return");
+		TimeEvent tEvent = new TimeEvent(timer, new Vector2(0f,0f),"Return");
 		SetChronology (chronology.chronology.Count-1, tEvent);
 		Serializator.SaveXml(chronology, datapath); 
 		yield return new WaitForSeconds (1f);
