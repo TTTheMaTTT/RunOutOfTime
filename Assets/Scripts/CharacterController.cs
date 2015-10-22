@@ -83,19 +83,18 @@ public class CharacterController : MonoBehaviour
 		}
 
 		//Отсюда начинаю писать о проверке условий на нарушение хронологии событий дубля
-		/*
 		if (lvlController.timer>prevTime+lvlController.refreshTime)
 		{
 			prevTime=lvlController.timer;
 			RaycastHit2D ray=Physics2D.Raycast(sight.transform.position,new Vector2(direction*1f,0f),sightDistance);
 			if (ray.collider.gameObject.tag==Tags.character)
 				doYouSeeYourself=(ray.collider.gameObject.GetComponent<CharacterController>().GetNumber()>number);
-			//Проверка условия на нарушение хронологии событий, которое может возникнуть из-за того, что дубль
+			//Проверка условия на нарушение хронологии событий, которое может возникнуть из-за того, что дубль оказался не в 
+			//хронологически каноничном месте или увидел самого себя из будущего
 			if ((!lvlController.CompareVelocity(number,actionNumber, rigid.velocity))||(doYouSeeYourself))
 				lvlController.DeleteDoubles(number,this);
 
 		}
-		*/
 	}
 
 	public void SetNumber(int _number)//Устанавливает, какой это номер дубля
