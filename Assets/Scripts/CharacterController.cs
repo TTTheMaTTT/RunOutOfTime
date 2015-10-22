@@ -30,8 +30,11 @@ public class CharacterController : MonoBehaviour
 			rigid.velocity = new Vector2 (speed * direction, rigid.velocity.y);
 		else
 			rigid.velocity = new Vector2 (0f, rigid.velocity.y);
-		wall=(Physics2D.OverlapCircle (sight.transform.position, grRadius, whatIsGround));
+		wall = (Physics2D.OverlapCircle (wallCheck1.transform.position, grRadius, whatIsGround)||
+		        Physics2D.OverlapCircle (wallCheck2.transform.position, grRadius, whatIsGround)||
+		        Physics2D.OverlapCircle (sight.transform.position, grRadius, whatIsGround));
 		grounded = Physics2D.OverlapCircle (groundCheck.transform.position, grRadius, whatIsGround);
+
 
 
 	}
