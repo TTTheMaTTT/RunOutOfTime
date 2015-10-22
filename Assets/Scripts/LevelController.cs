@@ -7,10 +7,11 @@ using System.IO;
 
 public class LevelController : MonoBehaviour {
 
-	private float eps = 0.5f, timeEps=0.01f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
+	private float eps = 5f, timeEps=0.007f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
 	private bool begin;
 
 	public float refreshTime=1f;
+	public float revisionTime=3f;
 
 	public float timer;
 	public GameObject[] anchors;
@@ -24,6 +25,7 @@ public class LevelController : MonoBehaviour {
 	private List<bool> whoHasAppeared=new List<bool>();//Кто уже появился из дублей?
 
 	public int count;
+	public int k;
 
 	void Start () 
 	{
@@ -137,12 +139,16 @@ public class LevelController : MonoBehaviour {
 				Destroy (doubles [i]);
 		for (int i=chronology.chronology.Count-1; i>number; i--)
 		{
+			if (i<appearances.Count)
+				appearances.RemoveAt(i);
 			chronology.chronology.RemoveAt(i);
-			appearances.RemoveAt(i);
+
 		}
+		k++;
 		for (int i=chronology.chronology[number].sequence.Count-1; i>paradox.GetActNumber(); i--)
 			chronology.chronology [number].sequence.RemoveAt (i);
 		paradox.underControl = true;
+		k++;
 	}
 
 	IEnumerator Restart()//Отправиться в прошлое

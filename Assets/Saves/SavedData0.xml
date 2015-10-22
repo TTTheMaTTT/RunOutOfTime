@@ -12,15 +12,15 @@
           <Action>Appear</Action>
         </TEvent>
         <TEvent>
-          <Moment>1.01286483</Moment>
+          <Moment>0.6730003</Moment>
           <Velocity>
             <x>10</x>
-            <y>-8.4</y>
+            <y>0</y>
           </Velocity>
-          <Action>ChangeSpeed</Action>
+          <Action>Jump</Action>
         </TEvent>
         <TEvent>
-          <Moment>2.02893686</Moment>
+          <Moment>1.68546462</Moment>
           <Velocity>
             <x>0</x>
             <y>0</y>
@@ -28,51 +28,7 @@
           <Action>ChangeSpeed</Action>
         </TEvent>
         <TEvent>
-          <Moment>7.78523064</Moment>
-          <Velocity>
-            <x>0</x>
-            <y>0</y>
-          </Velocity>
-          <Action>Return</Action>
-        </TEvent>
-      </TEvents>
-    </TSequence>
-    <TSequence>
-      <TEvents>
-        <TEvent>
-          <Moment>3.27992678</Moment>
-          <Velocity>
-            <x>0</x>
-            <y>0</y>
-          </Velocity>
-          <Action>Appear</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>3.27992678</Moment>
-          <Velocity>
-            <x>10</x>
-            <y>0</y>
-          </Velocity>
-          <Action>ChangeSpeed</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>4.28120327</Moment>
-          <Velocity>
-            <x>10</x>
-            <y>-9</y>
-          </Velocity>
-          <Action>ChangeSpeed</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>5.292823</Moment>
-          <Velocity>
-            <x>10</x>
-            <y>0</y>
-          </Velocity>
-          <Action>ChangeSpeed</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>6.567867</Moment>
+          <Moment>3.20830417</Moment>
           <Velocity>
             <x>0</x>
             <y>0</y>

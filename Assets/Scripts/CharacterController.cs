@@ -83,7 +83,7 @@ public class CharacterController : MonoBehaviour
 		}
 
 		//Отсюда начинаю писать о проверке условий на нарушение хронологии событий дубля
-		if (lvlController.timer>prevTime+lvlController.refreshTime)
+		if (lvlController.timer>prevTime+lvlController.revisionTime)
 		{
 			prevTime=lvlController.timer;
 			RaycastHit2D ray=Physics2D.Raycast(sight.transform.position,new Vector2(direction*1f,0f),sightDistance);
@@ -91,7 +91,7 @@ public class CharacterController : MonoBehaviour
 				doYouSeeYourself=(ray.collider.gameObject.GetComponent<CharacterController>().GetNumber()>number);
 			//Проверка условия на нарушение хронологии событий, которое может возникнуть из-за того, что дубль оказался не в 
 			//хронологически каноничном месте или увидел самого себя из будущего
-			if (/*(!lvlController.CompareVelocity(number,actionNumber, rigid.velocity))||*/(doYouSeeYourself))
+			if ((!lvlController.CompareVelocity(number,actionNumber, rigid.velocity))/*||(doYouSeeYourself)*/)
 				lvlController.DeleteDoubles(number,this);
 
 		}
