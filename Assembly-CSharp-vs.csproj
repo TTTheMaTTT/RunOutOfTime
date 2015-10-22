@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\CharacterController.cs" />
      <Compile Include="Assets\Scripts\Chronology.cs" />
      <Compile Include="Assets\Scripts\LevelController.cs" />
+     <Compile Include="Assets\Scripts\StarScript.cs" />
      <Compile Include="Assets\Scripts\Tags.cs" />
      <Compile Include="Assets\Scripts\TimeEvent.cs" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />

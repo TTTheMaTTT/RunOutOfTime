@@ -8,7 +8,7 @@ public class CharacterController : MonoBehaviour
 	private Rigidbody2D rigid;
 	private GameObject groundCheck, sight, wallCheck1, wallCheck2, wallCheck3;
 	private bool grounded, wall=false, wallAbove=false;
-	private float grRadius=0.3f;
+	private float grRadius=0.3f, sightDistance=20f;//sightDistance - как далеко видит персонаж
 	private float prevTime;
 	private LevelController lvlController;
 
@@ -59,6 +59,7 @@ public class CharacterController : MonoBehaviour
 		}
 		if (lvlController.timer>prevTime+lvlController.refreshTime)
 		{
+			prevTime=lvlController.timer;
 			if (!lvlController.CompareVelocity(number,actionNumber, rigid.velocity))
 			{
 				prevTime=lvlController.timer;
@@ -69,6 +70,7 @@ public class CharacterController : MonoBehaviour
 
 	void UncontrolledActions()//Что делает дубль, если он неподконтролен игроком
 	{
+		bool doYouSeeYourself=false;//Видит ли дубль себя из будущего?
 		if (lvlController.CompareTimer (number, actionNumber+1)) 
 		{
 			actionNumber++;
@@ -79,6 +81,21 @@ public class CharacterController : MonoBehaviour
 			else if ((lvlController.ChronoAction(number,actionNumber)=="Return"))
 				Destroy(gameObject,1f);
 		}
+
+		//Отсюда начинаю писать о проверке условий на нарушение хронологии событий дубля
+		/*
+		if (lvlController.timer>prevTime+lvlController.refreshTime)
+		{
+			prevTime=lvlController.timer;
+			RaycastHit2D ray=Physics2D.Raycast(sight.transform.position,new Vector2(direction*1f,0f),sightDistance);
+			if (ray.collider.gameObject.tag==Tags.character)
+				doYouSeeYourself=(ray.collider.gameObject.GetComponent<CharacterController>().GetNumber()>number);
+			//Проверка условия на нарушение хронологии событий, которое может возникнуть из-за того, что дубль
+			if ((!lvlController.CompareVelocity(number,actionNumber, rigid.velocity))||(doYouSeeYourself))
+				lvlController.DeleteDoubles(number,this);
+
+		}
+		*/
 	}
 
 	public void SetNumber(int _number)//Устанавливает, какой это номер дубля
@@ -91,6 +108,11 @@ public class CharacterController : MonoBehaviour
 		this.actionNumber =_number;
 	}
 
+	public int GetNumber() //Какой это дубль по счёту?
+	{
+		return number;
+	}
+	
 	public int GetActNumber() //Какое по счёту действие совершает персонаж?
 	{
 		return actionNumber;

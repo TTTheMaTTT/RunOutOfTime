@@ -129,6 +129,18 @@ public class LevelController : MonoBehaviour {
 			doubler.GetComponent<CharacterController> ().underControl = false;
 	}
 
+	public void DeleteDoubles(int number, CharacterController paradox)//Удаление всех дублей, начиная с номера number, а также переключение управления на парадоксальный дубль
+	{
+		GameObject[] doubles = GameObject.FindGameObjectsWithTag (Tags.character);
+		for (int i=0; i<doubles.Length; i++)
+			if (doubles [i].GetComponent<CharacterController> ().GetNumber () > number)
+				Destroy (doubles [i]);
+		for (int i=chronology.chronology.Count-1; i>=number; i--)
+			chronology.chronology.RemoveAt(i);
+		for (int i=chronology.chronology[number-1].sequence.Count-1; i>paradox.GetActNumber(); i--)
+			chronology.chronology [number].sequence.RemoveAt (i);
+		paradox.underControl = true;
+	}
 
 	IEnumerator Restart()//Отправиться в прошлое
 	{
