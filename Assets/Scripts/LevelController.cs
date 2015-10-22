@@ -1,0 +1,129 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.Xml.Serialization; 
+using System;
+using System.IO; 
+
+public class LevelController : MonoBehaviour {
+
+	private float eps=1.5f;
+	private bool begin;
+
+	public float refreshTime=1f;
+
+	public float timer;
+	public GameObject[] anchors;
+	public GameObject defaultAnchor;
+	public GameObject character;
+
+	public TimeChronology chronology;	// Какие действия совершали дубли?
+	private string datapath;	// путь к файлу сохранения для этой локации
+	private TimeSequence currentSequence;
+	private List<TimeEvent> appearances= new List<TimeEvent>();//коллекция времён появления дублей
+	private List<bool> whoHasAppeared=new List<bool>();//Кто уже появился из дублей?
+
+	public int count;
+
+	void Start () 
+	{
+		begin = true;
+
+		datapath = Application.dataPath + "/Saves/SavedData" + Application.loadedLevel + ".xml";	
+		if (File.Exists (datapath)) {	// если файл сохранения уже существует
+			chronology = Serializator.DeXml (datapath);  // считываем state оттуда
+			for (int i=0;i<chronology.chronology.Count;i++)
+			{
+				appearances.Add(chronology.chronology[i].sequence[0]);
+				whoHasAppeared.Add (false);
+			}
+		}
+		else 
+		{
+			SetDefaultChronology();
+		}
+		if (PlayerPrefs.HasKey ("startTime"))
+			timer = PlayerPrefs.GetFloat ("startTime");
+	}
+
+	void Update () {
+		timer += Time.deltaTime;//отсчёт времени
+
+		for (int i=0;i<appearances.Count;i++)//Здесь создаются временные клоны
+		{
+			if (!whoHasAppeared[i])
+			{
+				if (timer>appearances[i].time)
+				{
+					CreateDouble(i);
+					whoHasAppeared[i]=true;
+				}
+			}
+		}
+		count = chronology.chronology.Count;
+		if ((Input.GetButtonDown("Cancel"))&&(!begin))//Здесь мы отправляемся в прошлое
+		{
+			StartCoroutine(Restart ());
+		}
+
+		if ((begin)&&(Input.GetButtonDown("Jump")))//Здесь мы придём в прошлое
+		{
+			CreateDouble(chronology.chronology.Count);
+		}
+	}
+
+	void SetDefaultChronology()//С этого начинается летопись хронология
+	{
+		chronology= new TimeChronology();
+		CreateDouble (0);
+	}
+	
+
+	public void SetChronology (int number, TimeEvent tEvent)//Так записывается хронология
+	{
+		chronology.chronology [number].AddEvent (tEvent);
+	}
+
+
+
+	public bool CompareVelocity(int number, int actNumber, Vector2 velocity)//Функция проверки, насколько скорость дубля отличается от его хронологичной
+	{
+		return (Vector2.Distance (chronology.chronology [number].sequence [actNumber].velocity, velocity) < eps);
+	}
+
+	public bool CompareTimer(int number, int actNumber)//Функция проверки, не настало ли время для перехода к новому записанному событию
+	{
+		return (timer>chronology.chronology[number].sequence[actNumber].time);
+	}
+
+	public string ChronoAction(int number, int actNumber)//Так дубль узнаёт, какое действие ему совершить
+	{
+		return chronology.chronology [number].sequence [actNumber].action;
+	}
+
+	void CreateDouble(int number)//Создание дубля
+	{
+		GameObject doubler= Instantiate(character,defaultAnchor.transform.position, character.transform.rotation) as GameObject;
+		doubler.GetComponent<CharacterController>().SetNumber(number);
+		doubler.GetComponent<CharacterController>().SetActNumber(0);
+		if (number == chronology.chronology.Count) 
+		{
+			doubler.GetComponent<CharacterController> ().underControl = true;
+			currentSequence = new TimeSequence ();
+			currentSequence.AddEvent (new TimeEvent (0f, new Vector2 (0f, 0f), "Appear"));
+			chronology.AddSequence (currentSequence);
+			begin = false;
+		}
+		else 
+			doubler.GetComponent<CharacterController> ().underControl = false;
+	}
+
+	IEnumerator Restart()//Отправиться в прошлое
+	{
+		TimeEvent tEvent = new TimeEvent(chronology.chronology.Count-1, new Vector2(0f,0f),"Return");
+		SetChronology (chronology.chronology.Count-1, tEvent);
+		Serializator.SaveXml(chronology, datapath); 
+		yield return new WaitForSeconds (1f);
+		Application.LoadLevel (Application.loadedLevel);
+	}
+}

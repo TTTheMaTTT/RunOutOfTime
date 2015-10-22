@@ -4,15 +4,18 @@ using System.Collections;
 public class CharacterController : MonoBehaviour 
 {
 	private float speed=10f, jumpForce=600f;
-	private int number, direction=1;
+	private int number=0, direction=1, actionNumber;
 	private Rigidbody2D rigid;
 	private GameObject groundCheck, sight, wallCheck1, wallCheck2, wallCheck3;
 	private bool grounded, wall=false, wallAbove=false;
 	private float grRadius=0.3f;
+	private float prevTime;
+	private LevelController lvlController;
 
+	public bool underControl=true;
 	public LayerMask whatIsGround;
 
-	public void Awake()
+	public void Awake()//инициализация всех используемых модулей
 	{
 
 		rigid = gameObject.GetComponent<Rigidbody2D> ();
@@ -21,9 +24,10 @@ public class CharacterController : MonoBehaviour
 		wallCheck1=transform.FindChild ("WallCheck1").gameObject;
 		wallCheck2=transform.FindChild ("WallCheck2").gameObject;
 		wallCheck3=transform.FindChild ("WallCheck3").gameObject;
+		lvlController = GameObject.FindGameObjectWithTag (Tags.controller).GetComponent<LevelController> ();
 	}
 
-	public void FixedUpdate()
+	public void FixedUpdate()//Здесь происходит анализ ситуации, в которой находится персонаж
 	{
 		if ((!wall) && (Mathf.Abs (rigid.velocity.x) <= speed - 1f))
 			rigid.velocity = Vector2.Lerp (rigid.velocity, new Vector2 (speed * direction, rigid.velocity.y), 2f);
@@ -35,19 +39,69 @@ public class CharacterController : MonoBehaviour
 		        (Physics2D.OverlapCircle (wallCheck2.transform.position, grRadius, whatIsGround)&& !(wallAbove))||
 		        Physics2D.OverlapCircle (sight.transform.position, grRadius, whatIsGround));
 		grounded = Physics2D.OverlapCircle (groundCheck.transform.position, grRadius, whatIsGround);
-		if (Input.GetKeyDown (KeyCode.Space)&&(grounded))
-			rigid.AddForce (new Vector2 (0f, jumpForce));
-
-
+		if (underControl)
+			ControlledActions ();
+		else 
+			UncontrolledActions ();
 	}
 
 	void Update()
 	{
-		if (Input.GetButtonDown("Cancel"))
-		{
-			Application.LoadLevel (Application.loadedLevel);
-		}
 
 	}
 
+	void ControlledActions()//Что совершает персонаж, если он управляем игроком
+	{
+		if (Input.GetKeyDown (KeyCode.Space) && (grounded)) 
+		{
+			rigid.AddForce (new Vector2 (0f, jumpForce));
+			WriteChronology	("Jump");	
+		}
+		if (lvlController.timer>prevTime+lvlController.refreshTime)
+		{
+			if (!lvlController.CompareVelocity(number,actionNumber, rigid.velocity))
+			{
+				prevTime=lvlController.timer;
+				WriteChronology("ChangeSpeed");
+			}
+		}
+	}
+
+	void UncontrolledActions()//Что делает дубль, если он неподконтролен игроком
+	{
+		if (lvlController.CompareTimer (number, actionNumber+1)) 
+		{
+			actionNumber++;
+			if ((lvlController.ChronoAction(number,actionNumber)=="Jump")&&(grounded))
+			{
+				rigid.AddForce (new Vector2 (0f, jumpForce));
+				actionNumber++;
+			}
+			else if ((lvlController.ChronoAction(number,actionNumber)=="Return"))
+				Destroy(gameObject,1f);
+		}
+	}
+
+	public void SetNumber(int _number)//Устанавливает, какой это номер дубля
+	{
+		this.number=_number;
+	}
+
+	public void SetActNumber(int _number)//Устанавливает, какое по счёту действие совершает персонаж
+	{
+		this.actionNumber =_number;
+	}
+
+	public int GetActNumber() //Какое по счёту действие совершает персонаж?
+	{
+		return actionNumber;
+	}
+
+	void WriteChronology(string action)//Функция записи нового действия, совершённого персонажем
+	{
+		prevTime=lvlController.timer;
+		TimeEvent tEvent= new TimeEvent (lvlController.timer,rigid.velocity,action);
+		lvlController.SetChronology(number, tEvent);
+		actionNumber++;
+	}
 }
