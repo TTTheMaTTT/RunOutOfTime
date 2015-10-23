@@ -1,10 +1,11 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CharacterController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\StarScript.cs">
     <Files>
-      <File FileName="Assets\Scripts\CharacterController.cs" Line="112" Column="44" />
-      <File FileName="Assets\Scripts\ButtonScript.cs" Line="34" Column="39" />
-      <File FileName="Assets\Scripts\LevelController.cs" Line="10" Column="55" />
+      <File FileName="Assets\Scripts\CharacterController.cs" Line="79" Column="3" />
+      <File FileName="Assets\Scripts\ButtonScript.cs" Line="54" Column="1" />
+      <File FileName="Assets\Scripts\LevelController.cs" Line="45" Column="85" />
+      <File FileName="Assets\Scripts\StarScript.cs" Line="15" Column="46" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -6,9 +6,11 @@ using System;
 using System.IO; 
 
 public class LevelController : MonoBehaviour {
-
-	private float eps = 1f, checkEps=5f, timeEps=0.000001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
-	private bool begin;
+	
+	private float eps = 1f, checkEps=5f;
+	private float timeEps=0.000001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
+	private float timeRecoil=2f;//Эта переменная отвечает за то, насколько раньше самого раннего времени сможет появиться новый дубль	
+	private bool begin, pause;
 
 	public float refreshTime=1f;
 	public float revisionTime=1f;
@@ -23,22 +25,24 @@ public class LevelController : MonoBehaviour {
 	private TimeSequence currentSequence;
 	private List<TimeEvent> appearances= new List<TimeEvent>();//коллекция времён появления дублей
 	private List<bool> whoHasAppeared=new List<bool>();//Кто уже появился из дублей?
-
-	//Следующие переменные использовались при проверке правильности работы, если их удалить, прога смотжет нормально работать
-	public int count;
-	public Vector2 actualVelocity;
-	public Vector2 chronologicalVelocity;
+	
 	//Хронологические списки
-	public int doubleNumber;//Номер, для которого мы строим список
+	/*public int doubleNumber;//Номер, для которого мы строим список
 	public List<float> times=new List<float>();
 	public List<Vector2> velocities=new List<Vector2>();
-	public List<string> actions=new List<string>();
+	public List<string> actions=new List<string>();*/
 
 	void Start () 
 	{
-		begin = true;
-		timer = 0;
-		datapath = Application.dataPath + "/Saves/SavedData" + Application.loadedLevel + ".xml";	
+		begin = true; pause = false;
+		if (!PlayerPrefs.HasKey ("beginTime")) 
+		{
+			PlayerPrefs.SetFloat ("beginTime", 0f);
+			timer=PlayerPrefs.GetFloat("beginTime");
+		}
+		else
+			timer=PlayerPrefs.GetFloat("beginTime")-timeRecoil;
+		datapath = Application.dataPath + "/Saves/SavedData" + Application.loadedLevelName + ".xml";	
 		if (File.Exists (datapath)) {	// если файл сохранения уже существует
 			chronology = Serializator.DeXml (datapath);  // считываем state оттуда
 			for (int i=0;i<chronology.chronology.Count;i++)
@@ -51,13 +55,10 @@ public class LevelController : MonoBehaviour {
 		{
 			SetDefaultChronology();
 		}
-		if (PlayerPrefs.HasKey ("startTime"))
-			timer = PlayerPrefs.GetFloat ("startTime");
 	}
 
 	void Update () {
 		timer += Time.deltaTime;//отсчёт времени
-		count = chronology.chronology [0].sequence.Count;
 		for (int i=0;i<appearances.Count;i++)//Здесь создаются временные клоны
 		{
 			if (!whoHasAppeared[i])
@@ -74,20 +75,33 @@ public class LevelController : MonoBehaviour {
 			StartCoroutine(Restart ());
 		}
 
+		if (Input.GetButtonDown("Pause"))//Функция паузы
+		{
+			pause=!pause;
+		}
+
+		if (pause) //Сама пауза
+			Time.timeScale = 0f;
+		else
+			Time.timeScale = 1f;
+
 		if ((begin)&&(Input.GetButtonDown("Jump")))//Здесь мы придём в прошлое
 		{
+			if (timer<PlayerPrefs.GetFloat("beginTime"))
+				PlayerPrefs.SetFloat("beginTime",timer);
 			CreateDouble(chronology.chronology.Count);
 		}
 
-		if (Input.GetButtonDown("Vertical"))
+		/*if (Input.GetButtonDown("Vertical"))
 		{
 			MakeChronologyLists(doubleNumber);
-		}
+		}*/
 
 		if (Input.GetButtonDown("Fire2"))//удаление файла сохранения. Вскоре этот код будет убран в более подходящее место
 		{
 			File.Delete(datapath);
 			chronology.chronology.Clear();
+			PlayerPrefs.DeleteKey("beginTime");
 			Application.LoadLevel (Application.loadedLevel);
 		}
 
@@ -139,7 +153,7 @@ public class LevelController : MonoBehaviour {
 		return chronology.chronology [number].sequence [actNumber].action;
 	}
 
- 	public void MakeChronologyLists(int number)
+ 	/*public void MakeChronologyLists(int number)
 	{
 		times.Clear();
 		velocities.Clear();
@@ -150,7 +164,7 @@ public class LevelController : MonoBehaviour {
 			velocities.Add (WhatChronologicalVelocity (number,i));
 			actions.Add (WhatChronologicalAction (number,i));
 		}
-	}
+	}*/
 
 	public bool CompareTimer(int number, int actNumber)//Функция проверки, не настало ли время для перехода к новому записанному событию
 	{
@@ -210,7 +224,7 @@ public class LevelController : MonoBehaviour {
 		TimeEvent tEvent = new TimeEvent(timer, new Vector2(0f,0f),"Return");
 		SetChronology (chronology.chronology.Count-1, tEvent);
 		Serializator.SaveXml(chronology, datapath); 
-		yield return new WaitForSeconds (1f);
+		yield return new WaitForSeconds (0.5f);
 		Application.LoadLevel (Application.loadedLevel);
 	}
 }

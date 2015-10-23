@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class CharacterController : MonoBehaviour 
 {
 	private float speed=10f, jumpForce=600f;
-	private int /*number=0,*/ direction=1/*, actionNumber*/;
+	private int number=0, direction=1, actionNumber;
 	private Rigidbody2D rigid;
 	private GameObject groundCheck, sight, wallCheck1, wallCheck2, wallCheck3,controlCol, uncontrolCol;
 	private bool grounded, wall=false, wallAbove=false,returning=false;
@@ -15,10 +15,6 @@ public class CharacterController : MonoBehaviour
 
 	public bool underControl=true;
 	public LayerMask whatIsGround;
-	public int number;
-	public int actionNumber;
-
-	public Vector2 actualVelocity;
 
 	public void Awake()//инициализация всех используемых модулей
 	{
@@ -47,7 +43,6 @@ public class CharacterController : MonoBehaviour
 		        (Physics2D.Raycast (wallCheck2.transform.position,new Vector2(direction*1f,0f), grRadius, whatIsGround)&& !(wallAbove))||
 		        Physics2D.Raycast(sight.transform.position, new Vector2(direction*1f,0f),grRadius, whatIsGround));
 		grounded = Physics2D.OverlapCircle (groundCheck.transform.position, grRadius, whatIsGround);
-		actualVelocity = rigid.velocity;
 		if (underControl)
 			ControlledActions ();
 		else 
@@ -95,7 +90,7 @@ public class CharacterController : MonoBehaviour
 			else if ((lvlController.ChronoAction(number,actionNumber)=="Return"))
 			{
 				returning=true;
-				Destroy(gameObject,1f);
+				Destroy(gameObject,0.5f);
 			}
 		}
 		//Отсюда начинаю писать о проверке условий на нарушение хронологии событий дубля

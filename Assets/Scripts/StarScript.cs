@@ -13,7 +13,7 @@ public class StarScript : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		if (other.gameObject.tag == Tags.character)
-			Debug.Log ("Level Complete!");
+			Debug.Log (Application.loadedLevelName+" Complete!");
 	}
 
 }
