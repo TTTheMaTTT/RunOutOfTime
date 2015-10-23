@@ -7,7 +7,7 @@ using System.IO;
 
 public class LevelController : MonoBehaviour {
 
-	private float eps = 1f, checkEps=5f, timeEps=0.00001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
+	private float eps = 1f, checkEps=5f, timeEps=0.000001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
 	private bool begin;
 
 	public float refreshTime=1f;
@@ -109,7 +109,7 @@ public class LevelController : MonoBehaviour {
 
 	public bool CompareVelocityPrecisely(int number, int actNumber, Vector2 velocity)//Функция проверки, насколько скорость дубля отличается от его хронологичной
 	{
-		return (Mathf.Abs(chronology.chronology [number].sequence [actNumber].velocity.x- velocity.x) < eps);
+		return (Vector2.Distance(chronology.chronology [number].sequence [actNumber].velocity, velocity) < eps);
 	}
 
 	public bool CompareVelocity(int number, int actNumber, Vector2 velocity)//Такая же функция, только менее точная
@@ -118,8 +118,8 @@ public class LevelController : MonoBehaviour {
 		//{
 		//	Time.timeScale = 0f;
 		//}
-		return ((Mathf.Abs (chronology.chronology [number].sequence [actNumber].velocity.x - velocity.x) < checkEps)||
-			(!String.Equals(chronology.chronology[number].sequence[actNumber],"ChangeSpeed")));
+		return ((Mathf.Abs(chronology.chronology [number].sequence [actNumber].velocity.x- velocity.x) < checkEps)||
+			(!String.Equals(chronology.chronology[number].sequence[actNumber].action,"ChangeSpeed")));
 			
 	}
 

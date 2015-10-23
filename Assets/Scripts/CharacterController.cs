@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class CharacterController : MonoBehaviour 
 {
 	private float speed=10f, jumpForce=600f;
-	private int /*number=0,*/ direction=1, actionNumber;
+	private int /*number=0,*/ direction=1/*, actionNumber*/;
 	private Rigidbody2D rigid;
 	private GameObject groundCheck, sight, wallCheck1, wallCheck2, wallCheck3,controlCol, uncontrolCol;
 	private bool grounded, wall=false, wallAbove=false,returning=false;
@@ -16,7 +16,7 @@ public class CharacterController : MonoBehaviour
 	public bool underControl=true;
 	public LayerMask whatIsGround;
 	public int number;
-	
+	public int actionNumber;
 
 	public Vector2 actualVelocity;
 
@@ -38,14 +38,14 @@ public class CharacterController : MonoBehaviour
 	public void FixedUpdate()//Здесь происходит анализ ситуации, в которой находится персонаж
 	{
 		if ((!wall) && (Mathf.Abs (rigid.velocity.x) <= speed - 1f)&&(!returning))
-			rigid.velocity = Vector2.Lerp (rigid.velocity, new Vector2 (speed * direction, rigid.velocity.y), 0.5f);
+			rigid.velocity = Vector2.Lerp (rigid.velocity, new Vector2 (speed * direction, rigid.velocity.y), 0.1f);
 		else if ((!wall)&&(!returning))
-			rigid.velocity = new Vector2 (speed * direction, rigid.velocity.y);
+			rigid.velocity = new Vector2 (speed * direction, rigid.velocity.y);//Персонаж двигается здесь.
 		rigid.velocity = new Vector2 ((wall)? 0f: rigid.velocity.x, rigid.velocity.y);
 		wallAbove = Physics2D.OverlapCircle (wallCheck3.transform.position, grRadius, whatIsGround);
 		wall = (Physics2D.Raycast (wallCheck1.transform.position,new Vector2(direction*1f,0f), grRadius, whatIsGround)||
-		        (Physics2D.OverlapCircle (wallCheck2.transform.position, grRadius, whatIsGround)&& !(wallAbove))||
-		        Physics2D.OverlapCircle (sight.transform.position, grRadius, whatIsGround));
+		        (Physics2D.Raycast (wallCheck2.transform.position,new Vector2(direction*1f,0f), grRadius, whatIsGround)&& !(wallAbove))||
+		        Physics2D.Raycast(sight.transform.position, new Vector2(direction*1f,0f),grRadius, whatIsGround));
 		grounded = Physics2D.OverlapCircle (groundCheck.transform.position, grRadius, whatIsGround);
 		actualVelocity = rigid.velocity;
 		if (underControl)
@@ -109,8 +109,9 @@ public class CharacterController : MonoBehaviour
 			//хронологически каноничном месте или увидел самого себя из будущего
 			if (!(lvlController.CompareVelocity(number,actionNumber, rigid.velocity))||(doYouSeeYourself))
 			{
+				prevTime=lvlController.timer+5*lvlController.refreshTime;
 				lvlController.DeleteDoubles(number,this);
-				WriteChronology("ChangeSpeed");
+				//WriteChronology("ChangeSpeed");
 			}
 
 		}
@@ -154,7 +155,7 @@ public class CharacterController : MonoBehaviour
 
 	void WriteChronology(string action)//Функция записи нового действия, совершённого персонажем
 	{
-		prevTime=lvlController.timer;
+		//prevTime=lvlController.timer;//отсутствие этой строки обеспечивает независимость списка перемен скоростей и списка действий
 		TimeEvent tEvent= new TimeEvent (lvlController.timer,rigid.velocity,action);
 		lvlController.SetChronology(number, tEvent);
 		actionNumber++;
