@@ -7,11 +7,11 @@ using System.IO;
 
 public class LevelController : MonoBehaviour {
 
-	private float eps = 5f, timeEps=0.007f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
+	private float eps = 1f, checkEps=10f, timeEps=0.0001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
 	private bool begin;
 
 	public float refreshTime=1f;
-	public float revisionTime=3f;
+	public float revisionTime=1f;
 
 	public float timer;
 	public GameObject[] anchors;
@@ -24,8 +24,15 @@ public class LevelController : MonoBehaviour {
 	private List<TimeEvent> appearances= new List<TimeEvent>();//коллекция времён появления дублей
 	private List<bool> whoHasAppeared=new List<bool>();//Кто уже появился из дублей?
 
+	//Следующие переменные использовались при проверке правильности работы, если их удалить, прога смотжет нормально работать
 	public int count;
-	public int k;
+	public Vector2 actualVelocity;
+	public Vector2 chronologicalVelocity;
+	//Хронологические списки
+	public int doubleNumber;//Номер, для которого мы строим список
+	public List<float> times=new List<float>();
+	public List<Vector2> velocities=new List<Vector2>();
+	public List<string> actions=new List<string>();
 
 	void Start () 
 	{
@@ -73,6 +80,11 @@ public class LevelController : MonoBehaviour {
 			CreateDouble(chronology.chronology.Count);
 		}
 
+		if (Input.GetButtonDown("Vertical"))
+		{
+			MakeChronologyLists(doubleNumber);
+		}
+
 		if (Input.GetButtonDown("Fire2"))//удаление файла сохранения. Вскоре этот код будет убран в более подходящее место
 		{
 			File.Delete(datapath);
@@ -96,9 +108,45 @@ public class LevelController : MonoBehaviour {
 
 
 
-	public bool CompareVelocity(int number, int actNumber, Vector2 velocity)//Функция проверки, насколько скорость дубля отличается от его хронологичной
+	public bool CompareVelocityPrecisely(int number, int actNumber, Vector2 velocity)//Функция проверки, насколько скорость дубля отличается от его хронологичной
 	{
-		return (Vector2.Distance (chronology.chronology [number].sequence [actNumber].velocity, velocity) < eps);
+		return (Mathf.Abs(chronology.chronology [number].sequence [actNumber].velocity.x- velocity.x) < eps);
+	}
+
+	public bool CompareVelocity(int number, int actNumber, Vector2 velocity)//Такая же функция, только менее точная
+	{
+		//if (Mathf.Abs (chronology.chronology [number].sequence [actNumber].velocity.x - velocity.x) < checkEps)
+		//{
+		//	Time.timeScale = 0f;
+		//}
+		return (Mathf.Abs (chronology.chronology [number].sequence [actNumber].velocity.x - velocity.x) < checkEps);
+			
+	}
+
+	//Следующие четыре функции позволяют проверить, следует ли дубль своему каконическому поведению
+	public Vector2 WhatChronologicalVelocity(int number, int actNumber)
+	{
+		return chronology.chronology [number].sequence [actNumber].velocity;
+	}
+
+	public float WhatChronologicalTime (int number, int actNumber)
+	{
+		return chronology.chronology [number].sequence [actNumber].time;
+	}
+
+	public string WhatChronologicalAction (int number, int actNumber)
+	{
+		return chronology.chronology [number].sequence [actNumber].action;
+	}
+
+ 	public void MakeChronologyLists(int number)
+	{
+		for (int i=0;i<chronology.chronology [number].sequence.Count;i++)
+		{
+			times.Add (WhatChronologicalTime (number,i));
+			velocities.Add (WhatChronologicalVelocity (number,i));
+			actions.Add (WhatChronologicalAction (number,i));
+		}
 	}
 
 	public bool CompareTimer(int number, int actNumber)//Функция проверки, не настало ли время для перехода к новому записанному событию
@@ -117,18 +165,21 @@ public class LevelController : MonoBehaviour {
 	void CreateDouble(int number)//Создание дубля
 	{
 		GameObject doubler= Instantiate(character,defaultAnchor.transform.position, character.transform.rotation) as GameObject;
-		doubler.GetComponent<CharacterController>().SetNumber(number);
-		doubler.GetComponent<CharacterController>().SetActNumber(0);
+		CharacterController charControl = doubler.GetComponent<CharacterController> ();
+		charControl.SetNumber(number);
+		charControl.SetActNumber(0);
 		if (number == chronology.chronology.Count) 
 		{
-			doubler.GetComponent<CharacterController> ().underControl = true;
+			charControl.underControl = true;
 			currentSequence = new TimeSequence ();
 			currentSequence.AddEvent (new TimeEvent (timer, new Vector2 (0f, 0f), "Appear"));
 			chronology.AddSequence (currentSequence);
 			begin = false;
 		}
 		else 
-			doubler.GetComponent<CharacterController> ().underControl = false;
+		{
+			charControl.underControl = false;
+		}
 	}
 
 	public void DeleteDoubles(int number, CharacterController paradox)//Удаление всех дублей, начиная с номера number, а также переключение управления на парадоксальный дубль
@@ -144,11 +195,9 @@ public class LevelController : MonoBehaviour {
 			chronology.chronology.RemoveAt(i);
 
 		}
-		k++;
 		for (int i=chronology.chronology[number].sequence.Count-1; i>paradox.GetActNumber(); i--)
 			chronology.chronology [number].sequence.RemoveAt (i);
 		paradox.underControl = true;
-		k++;
 	}
 
 	IEnumerator Restart()//Отправиться в прошлое

@@ -6,7 +6,7 @@ public class ButtonScript : MonoBehaviour {
 
 
 	private Collider2D col;
-	public List<GameObject> whoPushesMe=new List<GameObject>();//Список объектов, стоящих на кнопке
+	private List<GameObject> whoPushesMe=new List<GameObject>();//Список объектов, стоящих на кнопке
 
 	public GameObject door;
 
