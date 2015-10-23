@@ -101,7 +101,7 @@ public class CharacterController : MonoBehaviour
 		chronoVelocity = lvlController.WhatChronologicalVelocity (number, actionNumber);
 		ChronoAction = lvlController.WhatChronologicalAction (number, actionNumber);
 		//Отсюда начинаю писать о проверке условий на нарушение хронологии событий дубля
-		/*if (lvlController.timer>prevTime1+lvlController.revisionTime)
+		if (lvlController.timer>prevTime1+lvlController.revisionTime)
 		{
 			prevTime1=lvlController.timer;
 			RaycastHit2D ray=Physics2D.Raycast(sight.transform.position,new Vector2(direction*1f,0f),sightDistance);
@@ -115,7 +115,7 @@ public class CharacterController : MonoBehaviour
 				WriteChronology("ChangeSpeed");
 			}
 
-		}*/
+		}
 	}
 
 	public void SetNumber(int _number)//Устанавливает, какой это номер дубля
