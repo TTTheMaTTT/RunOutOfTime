@@ -5,21 +5,18 @@ using System.Collections.Generic;
 public class CharacterController : MonoBehaviour 
 {
 	private float speed=10f, jumpForce=600f;
-	private int number=0, direction=1, actionNumber;
+	private int /*number=0,*/ direction=1, actionNumber;
 	private Rigidbody2D rigid;
 	private GameObject groundCheck, sight, wallCheck1, wallCheck2, wallCheck3,controlCol, uncontrolCol;
-	private bool grounded, wall=false, wallAbove=false;
+	private bool grounded, wall=false, wallAbove=false,returning=false;
 	private float grRadius=0.3f, sightDistance=20f;//sightDistance - как далеко видит персонаж
 	private float prevTime,prevTime1;
 	private LevelController lvlController;
 
 	public bool underControl=true;
 	public LayerMask whatIsGround;
+	public int number;
 	
-	//Переменные для контроля каноничности дубля
-	public float chronoTime;
-	public Vector2 chronoVelocity;
-	public string ChronoAction;
 
 	public Vector2 actualVelocity;
 
@@ -32,16 +29,17 @@ public class CharacterController : MonoBehaviour
 		wallCheck1=transform.FindChild ("WallCheck1").gameObject;
 		wallCheck2=transform.FindChild ("WallCheck2").gameObject;
 		wallCheck3=transform.FindChild ("WallCheck3").gameObject;
-		controlCol=transform.FindChild ("ControlledCollider").gameObject;
-		uncontrolCol=transform.FindChild ("UncontrolledCollider").gameObject;
+		//controlCol=transform.FindChild ("ControlledCollider").gameObject;
+		//uncontrolCol=transform.FindChild ("UncontrolledCollider").gameObject;
 		lvlController = GameObject.FindGameObjectWithTag (Tags.controller).GetComponent<LevelController> ();
+		returning = false;
 	}
 
 	public void FixedUpdate()//Здесь происходит анализ ситуации, в которой находится персонаж
 	{
-		if ((!wall) && (Mathf.Abs (rigid.velocity.x) <= speed - 1f))
-			rigid.velocity = Vector2.Lerp (rigid.velocity, new Vector2 (speed * direction, rigid.velocity.y), 2f);
-		else if (!wall)
+		if ((!wall) && (Mathf.Abs (rigid.velocity.x) <= speed - 1f)&&(!returning))
+			rigid.velocity = Vector2.Lerp (rigid.velocity, new Vector2 (speed * direction, rigid.velocity.y), 0.5f);
+		else if ((!wall)&&(!returning))
 			rigid.velocity = new Vector2 (speed * direction, rigid.velocity.y);
 		rigid.velocity = new Vector2 ((wall)? 0f: rigid.velocity.x, rigid.velocity.y);
 		wallAbove = Physics2D.OverlapCircle (wallCheck3.transform.position, grRadius, whatIsGround);
@@ -63,10 +61,10 @@ public class CharacterController : MonoBehaviour
 
 	void ControlledActions()//Что совершает персонаж, если он управляем игроком
 	{
-		if (controlCol.GetComponent<BoxCollider2D> ().enabled == false) 
+	/*	if (controlCol.GetComponent<BoxCollider2D> ().enabled == false) 
 		{
 			SwitchColMode (true);
-		}
+		}*/
 		if (Input.GetKeyDown (KeyCode.Space) && (grounded)) 
 		{
 			rigid.AddForce (new Vector2 (0f, jumpForce));
@@ -84,8 +82,8 @@ public class CharacterController : MonoBehaviour
 
 	void UncontrolledActions()//Что делает дубль, если он неподконтролен игроком
 	{
-		if (controlCol.GetComponent<BoxCollider2D> ().enabled == true) 
-			SwitchColMode (false);
+	/*	if (controlCol.GetComponent<BoxCollider2D> ().enabled == true) 
+			SwitchColMode (false);*/
 		bool doYouSeeYourself=false;//Видит ли дубль себя из будущего?
 		if (lvlController.CompareTimer (number, actionNumber+1)) 
 		{
@@ -95,13 +93,13 @@ public class CharacterController : MonoBehaviour
 				rigid.AddForce (new Vector2 (0f, jumpForce));
 			}
 			else if ((lvlController.ChronoAction(number,actionNumber)=="Return"))
+			{
+				returning=true;
 				Destroy(gameObject,1f);
+			}
 		}
-		chronoTime = lvlController.WhatChronologicalTime (number, actionNumber);
-		chronoVelocity = lvlController.WhatChronologicalVelocity (number, actionNumber);
-		ChronoAction = lvlController.WhatChronologicalAction (number, actionNumber);
 		//Отсюда начинаю писать о проверке условий на нарушение хронологии событий дубля
-		if (lvlController.timer>prevTime1+lvlController.revisionTime)
+		if ((lvlController.timer>prevTime1+lvlController.revisionTime)&&(!returning))
 		{
 			prevTime1=lvlController.timer;
 			RaycastHit2D ray=Physics2D.Raycast(sight.transform.position,new Vector2(direction*1f,0f),sightDistance);
@@ -138,7 +136,7 @@ public class CharacterController : MonoBehaviour
 		return actionNumber;
 	}
 
-	void SwitchColMode(bool controlled)//Необходимый костыль для преодоления неподконтрольными персонажами препятствий
+	/*void SwitchColMode(bool controlled)//Необходимый костыль для преодоления неподконтрольными персонажами препятствий
 	{
 		if (!controlled)
 		{
@@ -152,7 +150,7 @@ public class CharacterController : MonoBehaviour
 			uncontrolCol.GetComponent<BoxCollider2D>().enabled=false;
 			uncontrolCol.GetComponent<CircleCollider2D>().enabled=false;
 		}
-	}
+	}*/
 
 	void WriteChronology(string action)//Функция записи нового действия, совершённого персонажем
 	{

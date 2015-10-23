@@ -7,7 +7,7 @@ using System.IO;
 
 public class LevelController : MonoBehaviour {
 
-	private float eps = 1f, checkEps=10f, timeEps=0.0001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
+	private float eps = 1f, checkEps=5f, timeEps=0.00001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
 	private bool begin;
 
 	public float refreshTime=1f;
@@ -57,7 +57,7 @@ public class LevelController : MonoBehaviour {
 
 	void Update () {
 		timer += Time.deltaTime;//отсчёт времени
-
+		count = chronology.chronology [0].sequence.Count;
 		for (int i=0;i<appearances.Count;i++)//Здесь создаются временные клоны
 		{
 			if (!whoHasAppeared[i])
@@ -69,7 +69,6 @@ public class LevelController : MonoBehaviour {
 				}
 			}
 		}
-		count = chronology.chronology.Count;
 		if ((Input.GetButtonDown("Cancel"))&&(!begin))//Здесь мы отправляемся в прошлое
 		{
 			StartCoroutine(Restart ());
@@ -119,7 +118,8 @@ public class LevelController : MonoBehaviour {
 		//{
 		//	Time.timeScale = 0f;
 		//}
-		return (Mathf.Abs (chronology.chronology [number].sequence [actNumber].velocity.x - velocity.x) < checkEps);
+		return ((Mathf.Abs (chronology.chronology [number].sequence [actNumber].velocity.x - velocity.x) < checkEps)||
+			(!String.Equals(chronology.chronology[number].sequence[actNumber],"ChangeSpeed")));
 			
 	}
 
@@ -141,6 +141,9 @@ public class LevelController : MonoBehaviour {
 
  	public void MakeChronologyLists(int number)
 	{
+		times.Clear();
+		velocities.Clear();
+		actions.Clear ();
 		for (int i=0;i<chronology.chronology [number].sequence.Count;i++)
 		{
 			times.Add (WhatChronologicalTime (number,i));
@@ -154,7 +157,8 @@ public class LevelController : MonoBehaviour {
 		if (actNumber >= chronology.chronology [number].sequence.Count)
 			return false;
 		else 
-			return (Mathf.Abs(timer-chronology.chronology[number].sequence[actNumber].time)<timeEps);
+			return ((Mathf.Abs(timer-chronology.chronology[number].sequence[actNumber].time)<timeEps)||
+				(timer>chronology.chronology[number].sequence[actNumber].time));
 	}
 
 	public string ChronoAction(int number, int actNumber)//Так дубль узнаёт, какое действие ему совершить
@@ -198,6 +202,7 @@ public class LevelController : MonoBehaviour {
 		for (int i=chronology.chronology[number].sequence.Count-1; i>paradox.GetActNumber(); i--)
 			chronology.chronology [number].sequence.RemoveAt (i);
 		paradox.underControl = true;
+		begin = false;
 	}
 
 	IEnumerator Restart()//Отправиться в прошлое
