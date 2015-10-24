@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour {
 	public GameObject MainMenuUI;
 
 	public int levelNumber;
+	public int android;
 
 	private GameObject activeWindow;
 
@@ -15,6 +16,7 @@ public class MainMenu : MonoBehaviour {
 	{
 		activeWindow = MainMenuUI;
 		MainMenuUI.SetActive (true);
+		PlayerPrefs.SetInt ("AndroidMod", android);
 		if (!PlayerPrefs.HasKey ("LastLevel")) {
 			PlayerPrefs.SetInt ("LastLevel", 1);
 			levelNumber = 1;
@@ -28,7 +30,6 @@ public class MainMenu : MonoBehaviour {
 	
 	void Update	()
 	{
-
 	}
 	
 	public void StartGame()

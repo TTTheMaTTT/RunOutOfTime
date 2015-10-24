@@ -8,7 +8,7 @@ using System.IO;
 public class LevelController : MonoBehaviour {
 	
 	private float eps = 1f, checkEps=5f;
-	private float timeEps=0.000001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
+	private float timeEps=0.0001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
 	private float timeRecoil=2f;//Эта переменная отвечает за то, насколько раньше самого раннего времени сможет появиться новый дубль	
 	private bool begin, pause;
 
@@ -25,7 +25,8 @@ public class LevelController : MonoBehaviour {
 	private TimeSequence currentSequence;
 	private List<TimeEvent> appearances= new List<TimeEvent>();//коллекция времён появления дублей
 	private List<bool> whoHasAppeared=new List<bool>();//Кто уже появился из дублей?
-	
+	public bool andr;
+
 	//Хронологические списки
 	/*public int doubleNumber;//Номер, для которого мы строим список
 	public List<float> times=new List<float>();
@@ -34,6 +35,7 @@ public class LevelController : MonoBehaviour {
 
 	void Start () 
 	{
+		andr = (PlayerPrefs.GetInt ("AndroidMod") == 1);
 		begin = true; pause = false;
 		if (!PlayerPrefs.HasKey ("beginTime")) 
 		{
@@ -70,6 +72,7 @@ public class LevelController : MonoBehaviour {
 				}
 			}
 		}
+
 		if ((Input.GetButtonDown("Cancel"))&&(!begin))//Здесь мы отправляемся в прошлое
 		{
 			StartCoroutine(Restart ());
@@ -84,12 +87,26 @@ public class LevelController : MonoBehaviour {
 			Time.timeScale = 0f;
 		else
 			Time.timeScale = 1f;
-
-		if ((begin)&&(Input.GetButtonDown("Jump")))//Здесь мы придём в прошлое
+		if (begin)//Здесь мы придём в прошлое
 		{
-			if (timer<PlayerPrefs.GetFloat("beginTime"))
-				PlayerPrefs.SetFloat("beginTime",timer);
-			CreateDouble(chronology.chronology.Count);
+			bool appear=false;
+			if ((andr))
+			{
+				if (Input.touchCount==1)
+				{
+					Touch touch=Input.GetTouch(0);
+					if (touch.phase==TouchPhase.Began)
+						appear=true;
+				}
+			}
+			else if (Input.GetButton("Jump"))
+				appear=true;
+			if(appear)
+			{
+				if (timer<PlayerPrefs.GetFloat("beginTime"))
+					PlayerPrefs.SetFloat("beginTime",timer);
+				CreateDouble(chronology.chronology.Count);
+			}
 		}
 
 		/*if (Input.GetButtonDown("Vertical"))
@@ -171,7 +188,7 @@ public class LevelController : MonoBehaviour {
 		if (actNumber >= chronology.chronology [number].sequence.Count)
 			return false;
 		else 
-			return ((Mathf.Abs(timer-chronology.chronology[number].sequence[actNumber].time)<timeEps)||
+			return (/*(Mathf.Abs(timer-chronology.chronology[number].sequence[actNumber].time)<timeEps)||*/
 				(timer>chronology.chronology[number].sequence[actNumber].time));
 	}
 
@@ -217,6 +234,18 @@ public class LevelController : MonoBehaviour {
 			chronology.chronology [number].sequence.RemoveAt (i);
 		paradox.underControl = true;
 		begin = false;
+	}
+
+	public void Return()//функция, которая будет вызываться кнопкой на экране
+	{
+		if (!begin)
+			StartCoroutine(Restart ());
+	}
+
+	public void Pause()//Тоже вызывается кнопкой паузы
+	{
+		pause = !pause;
+
 	}
 
 	IEnumerator Restart()//Отправиться в прошлое

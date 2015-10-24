@@ -42,7 +42,7 @@ public class CharacterController : MonoBehaviour
 		wall = (Physics2D.Raycast (wallCheck1.transform.position,new Vector2(direction*1f,0f), grRadius, whatIsGround)||
 		        (Physics2D.Raycast (wallCheck2.transform.position,new Vector2(direction*1f,0f), grRadius, whatIsGround)&& !(wallAbove))||
 		        Physics2D.Raycast(sight.transform.position, new Vector2(direction*1f,0f),grRadius, whatIsGround));
-		grounded = Physics2D.OverlapCircle (groundCheck.transform.position, grRadius, whatIsGround);
+		grounded = Physics2D.Raycast (groundCheck.transform.position,new Vector2(0f,-1f), grRadius, whatIsGround);
 		if (underControl)
 			ControlledActions ();
 		else 
@@ -60,10 +60,25 @@ public class CharacterController : MonoBehaviour
 		{
 			SwitchColMode (true);
 		}*/
-		if (Input.GetKeyDown (KeyCode.Space) && (grounded)) 
+		if  (grounded) 
 		{
-			rigid.AddForce (new Vector2 (0f, jumpForce));
-			WriteChronology	("Jump");	
+			bool jumping=false;
+			if (lvlController.andr)
+			{
+				if (Input.touchCount==1)
+				{
+					Touch touch=Input.GetTouch(0);
+					if (touch.phase==TouchPhase.Began)
+						jumping=true;
+				}
+			}
+			else if (Input.GetKeyDown(KeyCode.Space))
+				jumping=true;
+			if (jumping)
+			{
+				rigid.AddForce (new Vector2 (0f, jumpForce));
+				WriteChronology	("Jump");	
+			}
 		}
 		if (lvlController.timer>prevTime+lvlController.refreshTime)
 		{
