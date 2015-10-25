@@ -1,21 +1,21 @@
 Base path: C:/Чисто Моя Папка!!!!/Programes/Unity/Editor/Data
-Pipe name: \\.\pipe\UnityShaderCompiler-1-1644
+Pipe name: \\.\pipe\UnityShaderCompiler-1-7948
 Cmd: getPlatforms
 Cmd: preprocess
-  insize=818 outsize=818 ok=1
+  insize=493 outsize=426 ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=362 outsize=1136 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=362 outsize=738 kw= ok=1
 Cmd: preprocess
-  insize=472 outsize=472 ok=1
+  insize=648 outsize=462 ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=477 outsize=1591 kw=GAF_VERTICES_TRANSFORM_ON ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=477 outsize=941 kw=GAF_VERTICES_TRANSFORM_ON ok=1
 Cmd: preprocess
-  insize=835 outsize=835 ok=1
-Cmd: preprocess
-  insize=730 outsize=730 ok=1
-Cmd: preprocess
-  insize=608 outsize=608 ok=1
-Cmd: preprocess
-  insize=1355 outsize=1355 ok=1
-Cmd: preprocess
-  insize=316 outsize=316 ok=1
-Cmd: preprocess
-  insize=634 outsize=634 ok=1
-Cmd: preprocess
-  insize=963 outsize=963 ok=1
+  insize=749 outsize=690 ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=354 outsize=1388 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=354 outsize=941 kw= ok=1

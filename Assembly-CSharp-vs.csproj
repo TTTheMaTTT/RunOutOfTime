@@ -46,27 +46,71 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\ButtonScript.cs" />
-     <Compile Include="Assets\Scripts\CharacterController.cs" />
-     <Compile Include="Assets\Scripts\Chronology.cs" />
-     <Compile Include="Assets\Scripts\LevelController.cs" />
-     <Compile Include="Assets\Scripts\MainMenu.cs" />
-     <Compile Include="Assets\Scripts\StarScript.cs" />
-     <Compile Include="Assets\Scripts\Tags.cs" />
-     <Compile Include="Assets\Scripts\TimeEvent.cs" />
+     <Compile Include="Assets\Scripts 1\Asset\GAFAnimationAsset.cs" />
+     <Compile Include="Assets\Scripts 1\Asset\GAFAssetExternalData.cs" />
+     <Compile Include="Assets\Scripts 1\Asset\GAFResourceData.cs" />
+     <Compile Include="Assets\Scripts 1\Asset\GAFTexturesResource.cs" />
+     <Compile Include="Assets\Scripts 1\Core\GAFAnimationPlayerSettings.cs" />
+     <Compile Include="Assets\Scripts 1\Core\GAFBaseMovieClip.cs" />
+     <Compile Include="Assets\Scripts 1\Core\GAFBehaviour.cs" />
+     <Compile Include="Assets\Scripts 1\Core\GAFFrameEvent.cs" />
+     <Compile Include="Assets\Scripts 1\Core\GAFMovieClip.cs" />
+     <Compile Include="Assets\Scripts 1\Core\GAFObjectsManager.cs" />
+     <Compile Include="Assets\Scripts 1\Core\IGAFMovieClip.cs" />
+     <Compile Include="Assets\Scripts 1\Helpers\WinRTFile.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\GAFBakedObject.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\GAFBakedObjectController.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\GAFObject.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\GAFObjectData.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\GAFRenderProcessor.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\IGAFObject.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\IGAFObjectProperties.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\IGAFObjectSerializedProperties.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\Baked\GAFBakedMaskObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\Baked\GAFBakedMaskedObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\Baked\GAFBakedObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\Baked\GAFBakedObjectImplsFactory.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\GAFStencilMaskManager.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\IGAFMaskObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\IGAFMaskedObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\IGAFObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\NotBaked\GAFMaskObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\NotBaked\GAFMaskedObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\NotBaked\GAFObjectImpl.cs" />
+     <Compile Include="Assets\Scripts 1\Objects\ObjectsImpls\NotBaked\GAFObjectImplsFactory.cs" />
+     <Compile Include="Assets\Scripts\AuxillaryElements\AnchorScript.cs" />
+     <Compile Include="Assets\Scripts\AuxillaryElements\ButtonScript.cs" />
+     <Compile Include="Assets\Scripts\AuxillaryElements\DirectionChanger.cs" />
+     <Compile Include="Assets\Scripts\AuxillaryElements\StarScript.cs" />
+     <Compile Include="Assets\Scripts\Classes\Tags.cs" />
+     <Compile Include="Assets\Scripts\Classes\TimeEvent.cs" />
+     <Compile Include="Assets\Scripts\Game\CharacterController.cs" />
+     <Compile Include="Assets\Scripts\Game\Chronology.cs" />
+     <Compile Include="Assets\Scripts\Game\LevelController.cs" />
+     <Compile Include="Assets\Scripts\Game\MainMenu.cs" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Background.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Vertex Colored Shaders\Mobile Transparent Vertex Color.shader" />
+     <None Include="Assets\Resources\Shaders\GAFShaderBase.cginc" />
+     <None Include="Assets\Resources\Shaders\GAFObjectsGroup.shader" />
+     <None Include="Assets\Resources\Shaders\GAFMaskedObject.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Detail.shader" />
+     <None Include="Assets\Saves\SavedDataLevel02.xml" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap Reflective.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Particles Additive Culled.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Vertex Colored Shaders\Mobile Vertex Colored.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap Only.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap AlphaTest.shader" />
      <None Include="Assets\Saves\SavedDataLevel01.xml" />
-     <None Include="Assets\Saves\SavedDataLevel02.xml" />
+     <None Include="Assets\Resources\Shaders\GAFMaskObject.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Чисто Моя Папка!!!!/Programes/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.3/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="GAF">
+ <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/GAF.dll</HintPath>
+ </Reference>
+ <Reference Include="Ionic.Zip.Reduced">
+ <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
