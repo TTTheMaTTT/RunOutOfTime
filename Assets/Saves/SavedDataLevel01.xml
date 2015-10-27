@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<TimeChronology xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TSequences>
+    <TSequence>
+      <TEvents>
+        <TEvent>
+          <Moment>0</Moment>
+          <Location>
+            <x>-9.12</x>
+            <y>1.54</y>
+          </Location>
+          <Action>Appear0</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>0.2622449</Moment>
+          <Location>
+            <x>-8.277637</x>
+            <y>1.56820917</y>
+          </Location>
+          <Action>Return</Action>
+        </TEvent>
+      </TEvents>
+    </TSequence>
+  </TSequences>
+</TimeChronology>

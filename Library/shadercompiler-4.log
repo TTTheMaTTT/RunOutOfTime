@@ -1,0 +1,15 @@
+Base path: C:/Чисто Моя Папка!!!!/Programes/Unity/Editor/Data
+Pipe name: \\.\pipe\UnityShaderCompiler-4-6752
+Cmd: getPlatforms
+Cmd: compileSnippet
+  api=0 type=0 insize=477 outsize=302 kw=GAF_VERTICES_TRANSFORM_OFF ok=1
+Cmd: compileSnippet
+  api=8 type=1 insize=477 outsize=1349 kw=GAF_VERTICES_TRANSFORM_ON ok=1
+Cmd: compileSnippet
+  api=1 type=1 insize=477 outsize=118 kw=GAF_VERTICES_TRANSFORM_OFF ok=1
+Cmd: compileSnippet
+  api=1 type=1 insize=354 outsize=118 kw= ok=1
+Unhandled exception: Readfile from pipe failed. GLE=Канал был закрыт.
+
+
+Quitting shader compiler process

@@ -69,8 +69,7 @@ public class CharacterController : MonoBehaviour
 				if (Input.touchCount==1)
 				{
 					Touch touch=Input.GetTouch(0);
-					if ((touch.phase==TouchPhase.Began)&&
-					    (string.Equals(lvlController.interController.CheckButtons(),"Nothing")))
+					if (touch.phase==TouchPhase.Began)
 						jumping=true;
 				}
 			}

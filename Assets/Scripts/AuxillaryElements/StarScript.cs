@@ -24,14 +24,23 @@ public class StarScript : MonoBehaviour {
 			Debug.Log (Application.loadedLevelName+" Complete!");
 		if (string.Equals(levelNumber,PlayerPrefs.GetString("LastLevelName")))
 		{
-			PlayerPrefs.SetInt("LastLayer",PlayerPrefs.GetInt("LastLayer")+1);
-			if (PlayerPrefs.GetInt("LastLayer")<10)
-				PlayerPrefs.SetString("LastLayerName","Level0"+PlayerPrefs.GetInt("LastLayer"));
+			PlayerPrefs.SetInt("LastLevel",PlayerPrefs.GetInt("LastLevel")+1);
+			if (PlayerPrefs.GetInt("LastLevel")<10)
+				PlayerPrefs.SetString("LastLevelName","Level0"+PlayerPrefs.GetInt("LastLevel"));
 			else
-				PlayerPrefs.SetString("LastLayerName","Level"+PlayerPrefs.GetInt("LastLayer"));
+				PlayerPrefs.SetString("LastLevelName","Level"+PlayerPrefs.GetInt("LastLevel"));
 		}
-		File.Delete(Application.dataPath + "/Saves/SavedData"+nextLevel+".xml");
+		File.Delete(Application.dataPath + "SavedData"+nextLevel+".xml");
+		DeletePrefs ();
+		PlayerPrefs.SetInt ("NewLevel", 1);
 		Application.LoadLevel (nextLevel);
 	}
 
+	void DeletePrefs()//при переходе на следующий уровень некоторые данные должны быть удалены
+	{
+		PlayerPrefs.DeleteKey("AnchNumber");
+		PlayerPrefs.DeleteKey("CameraSize");
+		PlayerPrefs.DeleteKey("nu");
+		PlayerPrefs.DeleteKey("beginTime");
+	}
 }

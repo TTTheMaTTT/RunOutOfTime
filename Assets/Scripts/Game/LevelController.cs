@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization; 
@@ -9,7 +10,7 @@ public class LevelController : MonoBehaviour {
 	
 	private float eps = 1f, checkEps=2f;
 	private float timeEps=0.0001f;//TimeEps отвечает за то, насколько точно дубли будут следовать своей хронолгии
-	private float timeRecoil=2f;//Эта переменная отвечает за то, насколько раньше самого раннего времени сможет появиться новый дубль	
+	private float timeRecoil=3f;//Эта переменная отвечает за то, насколько раньше самого раннего времени сможет появиться новый дубль	
 	private bool begin, pause;
 
 	public float refreshTime=1f;
@@ -28,8 +29,9 @@ public class LevelController : MonoBehaviour {
 	private Transform mainCharacter;//Положение активного персонажа
 	[HideInInspector]
 	public bool andr;
-	public InterfaceController interController;
 	public int anchNumb;
+
+	public bool what;
 
 	//Хронологические списки
 	/*public int doubleNumber;//Номер, для которого мы строим список
@@ -41,7 +43,6 @@ public class LevelController : MonoBehaviour {
 
 	void Start () 
 	{
-		interController = gameObject.GetComponent<InterfaceController> ();
 		if (PlayerPrefs.HasKey ("AnchNumber"))//где создавать главный дубль?
 			defaultAnchNumber=PlayerPrefs.GetInt("AnchNumber");
 		else 
@@ -52,7 +53,6 @@ public class LevelController : MonoBehaviour {
 		andr = (PlayerPrefs.GetInt ("AndroidMod") == 1);//включить режим Андроид-приложения?
 
 		begin = true; pause = false;
-
 		for (int i=0; i<anchors.Length; i++)//инициализация якорей
 			anchors [i].GetComponent<AnchorScript> ().SetNumber (i);
 
@@ -63,7 +63,17 @@ public class LevelController : MonoBehaviour {
 		}
 		else
 			timer=PlayerPrefs.GetFloat("beginTime")-timeRecoil;
-		datapath = Application.dataPath + "/Saves/SavedData" + Application.loadedLevelName + ".xml";	
+		datapath = Application.dataPath + "SavedData" + Application.loadedLevelName + ".xml";
+
+		if (PlayerPrefs.GetInt("NewLevel")==1)//Чтоб наверняка начать новый уровень сызнова-заново!!!
+		{
+			PlayerPrefs.SetInt("NewLevel",0);
+			File.Delete(datapath);
+			DeletePrefs();
+			Application.LoadLevel (Application.loadedLevel);
+			
+		}
+
 		if (File.Exists (datapath)) {	// если файл сохранения уже существует
 			chronology = Serializator.DeXml (datapath);  // считываем state оттуда
 			for (int i=0;i<chronology.chronology.Count;i++)
@@ -107,19 +117,6 @@ public class LevelController : MonoBehaviour {
 			Time.timeScale = 0f;
 		else
 			Time.timeScale = 1f;
-		if (andr)
-		{
-			if (Input.touchCount == 1) 
-			{
-				if (!string.Equals (interController.CheckButtons (), "Nothing")) {
-					string s = interController.CheckButtons ();
-					if (string.Equals(s,"TimeTravel"))
-						Return();
-					else if (string.Equals(s,"Pause"))
-						Pause();
-				}
-			}
-		}
 		if (begin)//Здесь мы придём в прошлое
 		{
 			bool appear=false;
@@ -128,8 +125,7 @@ public class LevelController : MonoBehaviour {
 				if (Input.touchCount==1)
 				{
 					Touch touch=Input.GetTouch(0);
-					if ((touch.phase==TouchPhase.Began)&&
-					    (string.Equals(interController.CheckButtons(),"Nothing")))
+					if (touch.phase==TouchPhase.Began)
 						appear=true;
 				}
 			}
@@ -152,8 +148,7 @@ public class LevelController : MonoBehaviour {
 		{
 			File.Delete(datapath);
 			chronology.chronology.Clear();
-			PlayerPrefs.DeleteKey("beginTime");
-			PlayerPrefs.DeleteKey("AnchNumber");
+			DeletePrefs();
 			Application.LoadLevel (Application.loadedLevel);
 		}
 
@@ -327,5 +322,13 @@ public class LevelController : MonoBehaviour {
 		{
 			places.Add(appearances[i].location);
 		}
+	}
+
+	void DeletePrefs()//при переходе на следующий уровень некоторые данные должны быть удалены
+	{
+		PlayerPrefs.DeleteKey("AnchNumber");
+		PlayerPrefs.DeleteKey("CameraSize");
+		PlayerPrefs.DeleteKey("nu");
+		PlayerPrefs.DeleteKey("beginTime");
 	}
 }

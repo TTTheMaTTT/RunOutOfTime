@@ -1,0 +1,91 @@
+Unity Player [version: Unity 4.6.3f1_4753d8b6ef2b]
+
+mono.dll caused an Access Violation (0xc0000005)
+  in module mono.dll at 0033:eef438f6.
+
+Error occurred at 2015-10-25_234952.
+C:\Чисто Моя Папка!!!!\Games\мои игры\Project RunOutOfTime\RunOutOfTimePC.exe, run by user.
+77% memory in use.
+3951 MB physical memory [878 MB free].
+7899 MB paging file [3120 MB free].
+8388608 MB user address space [8388351 MB free].
+Read from location 00000000 caused an access violation.
+
+Context:
+RDI:    0x00000000  RSI: 0x002cf458  RAX:   0x00000000
+RBX:    0x00000000  RCX: 0x00000028  RDX:   0x00000010
+RIP:    0xeef438f6  RBP: 0x002cf060  SegCs: 0x00000033
+EFlags: 0x00010246  RSP: 0x002cf030  SegSs: 0x0000002b
+R8:    0x002cf458  R9: 0x002cf2e0  R10:   0x00000001
+R11:    0x002cf240  R12: 0x002cf2e0  R13:   0x005f4d48
+R14:    0x002cf458  R15: 0x02a7e701
+
+Bytes at CS:EIP:
+84 17 75 21 f6 47 20 80 75 1b f6 47 20 7c 75 15 Module 1
+c:\Program Files\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL
+Image Base: 0x73750000  Image Size: 0x0002e000
+File Size:  168304      File Time:  2009-08-18_124802
+Version:
+   Company:    Microsoft Corporation
+   Product:    Microsoft® Windows Live ID
+   FileDesc:   Microsoft® Windows Live ID Namespace Provider
+   FileVer:    6.500.3165.0
+   ProdVer:    6.500.3165.0
+
+Module 2
+C:\Windows\system32\ksuser.dll
+Image Base: 0x74f30000  Image Size: 0x00006000
+File Size:  5120        File Time:  2009-07-14_124114
+Version:
+   Company:    Microsoft Corporation
+   Product:    Microsoft® Windows® Operating System
+   FileDesc:   User CSA Library
+   FileVer:    6.1.7600.16385
+   ProdVer:    6.1.7600.16385
+
+Module 3
+C:\Windows\system32\USER32.dll
+Image Base: 0x770f0000  Image Size: 0x000fa000
+File Size:  1008640     File Time:  2009-07-14_124158
+Version:
+   Company:    Microsoft Corporation
+   Product:    Операционная система Microsoft® Windows®
+   FileDesc:   Многопользовательская библиотека клиента USER API Windows
+   FileVer:    6.1.7600.16385
+   ProdVer:    6.1.7600.16385
+
+Module 4
+C:\Windows\system32\kernel32.dll
+Image Base: 0x771f0000  Image Size: 0x0011f000
+File Size:  1162240     File Time:  2009-07-14_124114
+Version:
+   Company:    Microsoft Corporation
+   Product:    Операционная система Microsoft® Windows®
+   FileDesc:   Библиотека клиента Windows NT BASE API
+   FileVer:    6.1.7600.16385
+   ProdVer:    6.1.7600.16385
+
+Module 5
+C:\Windows\SYSTEM32\ntdll.dll
+Image Base: 0x77310000  Image Size: 0x001ab000
+File Size:  1736608     File Time:  2010-03-24_175946
+Version:
+   Company:    Microsoft Corporation
+   Product:    Операционная система Microsoft® Windows®
+   FileDesc:   Системная библиотека NT
+   FileVer:    6.1.7600.16559
+   ProdVer:    6.1.7600.16559
+
+Module 6
+C:\Windows\system32\PSAPI.DLL
+Image Base: 0x774d0000  Image Size: 0x00007000
+File Size:  9216        File Time:  2009-07-14_124154
+Version:
+   Company:    Microsoft Corporation
+   Product:    Microsoft® Windows® Operating System
+   FileDesc:   Process Status Helper
+   FileVer:    6.1.7600.16385
+   ProdVer:    6.1.7600.16385
+
+
+== [end of error.log] ==

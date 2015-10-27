@@ -10,18 +10,16 @@ public class MainMenu : MonoBehaviour {
 	public int android;
 
 	private GameObject activeWindow;
-	private InterfaceController interController;
 
 	void Start()
 	{
-		interController = gameObject.GetComponent<InterfaceController> ();
 		activeWindow = MainMenuUI;
 		MainMenuUI.SetActive (true);
 		PlayerPrefs.SetInt ("AndroidMod", android);
 		if (!PlayerPrefs.HasKey ("LastLevel")) {
 			PlayerPrefs.SetInt ("LastLevel", 1);
 			levelNumber = 1;
-			PlayerPrefs.SetString("LastLayerName","01");
+			PlayerPrefs.SetString("LastLevelName","01");
 		} 
 		else
 			levelNumber=PlayerPrefs.GetInt("LastLevel");
@@ -31,21 +29,6 @@ public class MainMenu : MonoBehaviour {
 	
 	void Update	()
 	{
-		if (android==1)
-		{
-			if (Input.touchCount == 1) 
-			{
-				if (!string.Equals (interController.CheckButtons (), "Nothing")) {
-					string s = interController.CheckButtons ();
-					if (string.Equals(s,"StartGame"))
-						StartGame();
-					else if (string.Equals(s,"LevelSelect"))
-						LevelSelect();
-					else if (string.Equals(s,"Settings"))
-						Settings();
-				}
-			}
-		}
 	}
 	
 	public void StartGame()
@@ -53,25 +36,38 @@ public class MainMenu : MonoBehaviour {
 		PlayerPrefs.DeleteKey("AnchNumber");
 		if (levelNumber < 10) 
 		{
-			File.Delete(Application.dataPath + "/Saves/SavedDataLevel0"+levelNumber+".xml");
+			if (File.Exists(Application.dataPath + "SavedDataLevel0"+levelNumber+".xml"))
+				File.Delete(Application.dataPath + "SavedDataLevel0"+levelNumber+".xml");
+			DeletePrefs();
 			Application.LoadLevel ("Level0" + levelNumber);
 		}
 		else
 		{
-			File.Delete(Application.dataPath + "/Saves/SavedDataLevel"+levelNumber+".xml");
+			if (File.Exists(Application.dataPath + "SavedDataLevel"+levelNumber+".xml"))
+				File.Delete(Application.dataPath + "SavedDataLevel"+levelNumber+".xml");
+			DeletePrefs();	
 			Application.LoadLevel ("Level" + levelNumber);
 		}
 	}
 	
 	public void LevelSelect()
 	{
-		File.Delete(Application.dataPath + "/Saves/SavedDataLevel01.xml");
-		PlayerPrefs.DeleteKey("AnchNumber");
+		if (File.Exists(Application.dataPath + "SavedDataLevel01.xml"))
+			File.Delete(Application.dataPath + "SavedDataLevel01.xml");
+		DeletePrefs ();
 		Application.LoadLevel("Level01");
 	}
 
 	
 	public void Settings()
 	{
+	}
+
+	void DeletePrefs()//при переходе на следующий уровень некоторые данные должны быть удалены
+	{
+		PlayerPrefs.DeleteKey("AnchNumber");
+		PlayerPrefs.DeleteKey("CameraSize");
+		PlayerPrefs.DeleteKey("nu");
+		PlayerPrefs.DeleteKey("beginTime");
 	}
 }
