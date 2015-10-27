@@ -66,10 +66,10 @@
      <None Include="Assets\Saves\SavedDataLevel02.xml" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap Reflective.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Particles Additive Culled.shader" />
+     <None Include="Assets\Saves\SavedDataLevel03.xml" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Vertex Colored Shaders\Mobile Vertex Colored.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap Only.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap AlphaTest.shader" />
-     <None Include="Assets\Saves\SavedDataLevel01.xml" />
      <None Include="Assets\Resources\Shaders\GAFMaskObject.shader" />
  <Reference Include="Assembly-UnityScript">
  <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Library/ScriptAssemblies/Assembly-UnityScript.dll</HintPath>
@@ -80,23 +80,23 @@
  <Reference Include="UnityEditor.UI">
  <HintPath>C:/Чисто Моя Папка!!!!/Programes/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.3/Editor/UnityEditor.UI.dll</HintPath>
  </Reference>
- <Reference Include="UnityEditor.Graphs">
- <HintPath>C:/Чисто Моя Папка!!!!/Programes/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
- </Reference>
  <Reference Include="GAF">
  <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/GAF.dll</HintPath>
- </Reference>
- <Reference Include="GAFEditor">
- <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/Editor/GAFEditor.dll</HintPath>
  </Reference>
  <Reference Include="Ionic.Zip.Reduced">
  <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
+ <Reference Include="GAFConverter">
+ <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/Editor/GAFConverter.dll</HintPath>
+ </Reference>
+ <Reference Include="GAFEditor">
+ <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/Editor/GAFEditor.dll</HintPath>
+ </Reference>
  <Reference Include="MiniJson">
  <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/Editor/MiniJson.dll</HintPath>
  </Reference>
- <Reference Include="GAFConverter">
- <HintPath>C:/Чисто Моя Папка!!!!/Games/мои игры/Project RunOutOfTime/Assets/Plugins/Editor/GAFConverter.dll</HintPath>
+ <Reference Include="UnityEditor.Graphs">
+ <HintPath>C:/Чисто Моя Папка!!!!/Programes/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

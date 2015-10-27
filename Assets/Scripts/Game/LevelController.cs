@@ -26,8 +26,9 @@ public class LevelController : MonoBehaviour {
 	private List<TimeEvent> appearances= new List<TimeEvent>();//коллекция времён появления дублей
 	private List<bool> whoHasAppeared=new List<bool>();//Кто уже появился из дублей?
 	private Transform mainCharacter;//Положение активного персонажа
+	[HideInInspector]
 	public bool andr;
-
+	public InterfaceController interController;
 	public int anchNumb;
 
 	//Хронологические списки
@@ -40,6 +41,7 @@ public class LevelController : MonoBehaviour {
 
 	void Start () 
 	{
+		interController = gameObject.GetComponent<InterfaceController> ();
 		if (PlayerPrefs.HasKey ("AnchNumber"))//где создавать главный дубль?
 			defaultAnchNumber=PlayerPrefs.GetInt("AnchNumber");
 		else 
@@ -105,6 +107,19 @@ public class LevelController : MonoBehaviour {
 			Time.timeScale = 0f;
 		else
 			Time.timeScale = 1f;
+		if (andr)
+		{
+			if (Input.touchCount == 1) 
+			{
+				if (!string.Equals (interController.CheckButtons (), "Nothing")) {
+					string s = interController.CheckButtons ();
+					if (string.Equals(s,"TimeTravel"))
+						Return();
+					else if (string.Equals(s,"Pause"))
+						Pause();
+				}
+			}
+		}
 		if (begin)//Здесь мы придём в прошлое
 		{
 			bool appear=false;
@@ -113,7 +128,8 @@ public class LevelController : MonoBehaviour {
 				if (Input.touchCount==1)
 				{
 					Touch touch=Input.GetTouch(0);
-					if (touch.phase==TouchPhase.Began)
+					if ((touch.phase==TouchPhase.Began)&&
+					    (string.Equals(interController.CheckButtons(),"Nothing")))
 						appear=true;
 				}
 			}

@@ -12,7 +12,7 @@
           <Action>Appear0</Action>
         </TEvent>
         <TEvent>
-          <Moment>0.3582962</Moment>
+          <Moment>0.3582989</Moment>
           <Location>
             <x>-9.311142</x>
             <y>-1.21742892</y>
@@ -20,7 +20,7 @@
           <Action>ChangeLocation</Action>
         </TEvent>
         <TEvent>
-          <Moment>0.5373975</Moment>
+          <Moment>0.5373995</Moment>
           <Location>
             <x>-8.005055</x>
             <y>-1.5534265</y>
@@ -28,7 +28,7 @@
           <Action>ChangeLocation</Action>
         </TEvent>
         <TEvent>
-          <Moment>0.7164966</Moment>
+          <Moment>0.7164993</Moment>
           <Location>
             <x>-6.71314859</x>
             <y>-1.800903</y>
@@ -36,78 +36,90 @@
           <Action>ChangeLocation</Action>
         </TEvent>
         <TEvent>
-          <Moment>1.97019768</Moment>
+          <Moment>2.7860992</Moment>
           <Location>
             <x>-6.290299</x>
             <y>-1.80073941</y>
           </Location>
-          <Action>Return</Action>
-        </TEvent>
-      </TEvents>
-    </TSequence>
-    <TSequence>
-      <TEvents>
-        <TEvent>
-          <Moment>-1.66160262</Moment>
-          <Location>
-            <x>-10.52</x>
-            <y>-1.46</y>
-          </Location>
-          <Action>Appear0</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>-0.885501742</Moment>
-          <Location>
-            <x>-6.290299</x>
-            <y>-1.80080616</y>
-          </Location>
           <Action>Jump</Action>
         </TEvent>
         <TEvent>
-          <Moment>0.0696984753</Moment>
+          <Moment>2.86569953</Moment>
           <Location>
-            <x>-1.52216685</x>
-            <y>-2.472809</y>
+            <x>-6.270299</x>
+            <y>-0.8007395</y>
           </Location>
           <Action>ChangeLocation</Action>
         </TEvent>
         <TEvent>
-          <Moment>0.189111337</Moment>
+          <Moment>2.99196339</Moment>
+          <Location>
+            <x>-5.8293643</x>
+            <y>0.3392601</y>
+          </Location>
+          <Action>ChangeLocation</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>3.11136413</Moment>
+          <Location>
+            <x>-5.032763</x>
+            <y>1.04725969</y>
+          </Location>
+          <Action>ChangeLocation</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>3.2307632</Moment>
+          <Location>
+            <x>-4.04714632</x>
+            <y>1.32325935</y>
+          </Location>
+          <Action>ChangeLocation</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>3.35016322</Moment>
+          <Location>
+            <x>-2.9130404</x>
+            <y>1.1672591</y>
+          </Location>
+          <Action>ChangeLocation</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>3.46956325</Moment>
+          <Location>
+            <x>-1.71304023</x>
+            <y>0.5792589</y>
+          </Location>
+          <Action>ChangeLocation</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>3.588963</Moment>
+          <Location>
+            <x>-1.51593935</x>
+            <y>-0.44074133</y>
+          </Location>
+          <Action>ChangeLocation</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>3.70836329</Moment>
+          <Location>
+            <x>-1.52113163</x>
+            <y>-1.8927418</y>
+          </Location>
+          <Action>ChangeLocation</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>3.8277638</Moment>
+          <Location>
+            <x>-1.52276456</x>
+            <y>-3.7767427</y>
+          </Location>
+          <Action>ChangeLocation</Action>
+        </TEvent>
+        <TEvent>
+          <Moment>4.74316263</Moment>
           <Location>
             <x>-1.52288473</x>
-            <y>-4.298048</y>
-          </Location>
-          <Action>ChangeLocation</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>0.833520353</Moment>
-          <Location>
-            <x>-0.205391258</x>
-            <y>-4.297424</y>
-          </Location>
-          <Action>ChangeLocation</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>1.01261961</Moment>
-          <Location>
-            <x>1.11794853</x>
-            <y>-4.633424</y>
-          </Location>
-          <Action>ChangeLocation</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>1.19171989</Moment>
-          <Location>
-            <x>2.40843058</x>
-            <y>-4.8606286</y>
-          </Location>
-          <Action>ChangeLocation</Action>
-        </TEvent>
-        <TEvent>
-          <Moment>1.98772</Moment>
-          <Location>
-            <x>2.68999171</x>
-            <y>-4.86046553</y>
+            <y>-4.29742575</y>
           </Location>
           <Action>Return</Action>
         </TEvent>

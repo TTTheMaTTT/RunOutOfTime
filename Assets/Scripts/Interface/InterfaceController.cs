@@ -5,18 +5,18 @@ using System.Collections.Generic;
 public class InterfaceController : MonoBehaviour {
 	
 	private List<GameObject> buttons=new List<GameObject>();
-	
+	public float x;
 
 	void Start () 
 	{
-		GameObject[] objects=GameObject.FindGameObjectsWithTag("Buttons");
+		GameObject[] objects=GameObject.FindGameObjectsWithTag("Button");
 		for (int i=0; i<objects.Length; i++)
 			buttons.Add (objects [i]);	
 	}
 	
 
 	void Update () {
-	
+		x = buttons [0].GetComponent<RectTransform> ().sizeDelta.x;
 	}
 
 	public string CheckButtons()

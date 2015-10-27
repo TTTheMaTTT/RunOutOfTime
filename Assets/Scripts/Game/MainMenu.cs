@@ -10,10 +10,11 @@ public class MainMenu : MonoBehaviour {
 	public int android;
 
 	private GameObject activeWindow;
-
+	private InterfaceController interController;
 
 	void Start()
 	{
+		interController = gameObject.GetComponent<InterfaceController> ();
 		activeWindow = MainMenuUI;
 		MainMenuUI.SetActive (true);
 		PlayerPrefs.SetInt ("AndroidMod", android);
@@ -30,6 +31,21 @@ public class MainMenu : MonoBehaviour {
 	
 	void Update	()
 	{
+		if (android==1)
+		{
+			if (Input.touchCount == 1) 
+			{
+				if (!string.Equals (interController.CheckButtons (), "Nothing")) {
+					string s = interController.CheckButtons ();
+					if (string.Equals(s,"StartGame"))
+						StartGame();
+					else if (string.Equals(s,"LevelSelect"))
+						LevelSelect();
+					else if (string.Equals(s,"Settings"))
+						Settings();
+				}
+			}
+		}
 	}
 	
 	public void StartGame()
