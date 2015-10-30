@@ -97,8 +97,11 @@ public class CharacterController : MonoBehaviour
 				jumping=true;
 			if ((jumping)||(jumping1))
 			{
-				rigid.AddForce (new Vector2 (0f, jumpForce));
-				WriteChronology	("Jump");	
+				if (appearTime<=0)
+				{
+					rigid.AddForce (new Vector2 (0f, jumpForce));
+					WriteChronology	("Jump");	
+				}
 				jumping=false;
 				jumping1=false;
 			}
@@ -149,7 +152,7 @@ public class CharacterController : MonoBehaviour
 			prevTime=lvlController.timer;
 			RaycastHit2D ray=Physics2D.Raycast(sight.transform.position,new Vector2(direction*1f,0f),sightDistance);
 			if (ray)
-				if (ray.collider.gameObject.tag==Tags.character)
+				if ((ray.collider.gameObject.tag==Tags.character)&&(appearTime<=0))
 					doYouSeeYourself=(ray.collider.gameObject.GetComponent<CharacterController>().GetNumber()>number);
 
 		}
