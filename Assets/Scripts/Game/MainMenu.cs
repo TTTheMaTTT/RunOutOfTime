@@ -4,9 +4,9 @@ using System.IO;
 
 public class MainMenu : MonoBehaviour {
 
-	public GameObject MainMenuUI;
+	public GameObject MainMenuUI, LevelSelectUI;
 
-	public int levelNumber;
+	private int levelNumber;
 	public int android;
 
 	private GameObject activeWindow;
@@ -15,6 +15,7 @@ public class MainMenu : MonoBehaviour {
 	{
 		activeWindow = MainMenuUI;
 		MainMenuUI.SetActive (true);
+		LevelSelectUI.SetActive (false);
 		PlayerPrefs.SetInt ("AndroidMod", android);
 		if (!PlayerPrefs.HasKey ("LastLevel")) {
 			PlayerPrefs.SetInt ("LastLevel", 1);
@@ -36,15 +37,15 @@ public class MainMenu : MonoBehaviour {
 		PlayerPrefs.DeleteKey("AnchNumber");
 		if (levelNumber < 10) 
 		{
-			if (File.Exists(Application.dataPath + "SavedDataLevel0"+levelNumber+".xml"))
-				File.Delete(Application.dataPath + "SavedDataLevel0"+levelNumber+".xml");
+			if (File.Exists((Application.platform == RuntimePlatform.Android? Application.dataPath: Application.persistentDataPath) + "SavedDataLevel0"+levelNumber+".xml"))
+				File.Delete((Application.platform == RuntimePlatform.Android? Application.dataPath: Application.persistentDataPath) + "SavedDataLevel0"+levelNumber+".xml");
 			DeletePrefs();
 			Application.LoadLevel ("Level0" + levelNumber);
 		}
 		else
 		{
-			if (File.Exists(Application.dataPath + "SavedDataLevel"+levelNumber+".xml"))
-				File.Delete(Application.dataPath + "SavedDataLevel"+levelNumber+".xml");
+			if (File.Exists((Application.platform == RuntimePlatform.Android? Application.dataPath: Application.persistentDataPath) + "SavedDataLevel"+levelNumber+".xml"))
+				File.Delete((Application.platform == RuntimePlatform.Android? Application.dataPath: Application.persistentDataPath) + "SavedDataLevel"+levelNumber+".xml");
 			DeletePrefs();	
 			Application.LoadLevel ("Level" + levelNumber);
 		}
@@ -52,10 +53,10 @@ public class MainMenu : MonoBehaviour {
 	
 	public void LevelSelect()
 	{
-		if (File.Exists(Application.dataPath + "SavedDataLevel01.xml"))
-			File.Delete(Application.dataPath + "SavedDataLevel01.xml");
-		DeletePrefs ();
-		Application.LoadLevel("Level01");
+		MainMenuUI.SetActive (false);
+		LevelSelectUI.SetActive (true);
+		activeWindow = LevelSelectUI;
+		gameObject.GetComponent<SpriteRenderer> ().enabled = false;
 	}
 
 	
@@ -63,11 +64,29 @@ public class MainMenu : MonoBehaviour {
 	{
 	}
 
+	public void Return()
+	{
+		activeWindow.SetActive (false);
+		MainMenuUI.SetActive (true);
+		activeWindow = MainMenuUI;
+		gameObject.GetComponent<SpriteRenderer> ().enabled = true;
+	}
+
+	public void ChooseLevel (string lvlName)
+	{
+		if (File.Exists((Application.platform == RuntimePlatform.Android? Application.dataPath: Application.persistentDataPath) + "SavedData"+lvlName+".xml"))
+			File.Delete((Application.platform == RuntimePlatform.Android? Application.dataPath: Application.persistentDataPath) + "SavedData"+lvlName+".xml");
+		DeletePrefs();	
+		Application.LoadLevel (lvlName);
+	}
+
 	void DeletePrefs()//при переходе на следующий уровень некоторые данные должны быть удалены
 	{
-		PlayerPrefs.DeleteKey("AnchNumber");
+		PlayerPrefs.SetInt("AnchNumber",0);
 		PlayerPrefs.DeleteKey("CameraSize");
-		PlayerPrefs.DeleteKey("nu");
+		PlayerPrefs.SetFloat("nu",0f);
 		PlayerPrefs.DeleteKey("beginTime");
+		PlayerPrefs.DeleteKey("Anch0Active");
+		PlayerPrefs.DeleteKey("Anch1Active");
 	}
 }

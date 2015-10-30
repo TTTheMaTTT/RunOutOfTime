@@ -1,17 +1,19 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using GAF.Core;
 
 public class CharacterController : MonoBehaviour 
 {
-	private float speed=10f, jumpForce=700f;
+	private float speed=11f, jumpForce=700f, appearTime=0.8f;
 	private int number=0, direction=1, actionNumber;
 	private Rigidbody2D rigid;
 	private GameObject groundCheck, sight, wallCheck1, wallCheck2, wallCheck3,controlCol, uncontrolCol;
-	private bool grounded, wall=false, wallAbove=false,returning=false;
+	private bool grounded, wall=false, wallAbove=false,returning=false, jumping1=false;
 	private float grRadius=0.3f, sightDistance=20f;//sightDistance - как далеко видит персонаж
 	private float prevTime,prevTime1;
 	private LevelController lvlController;
+	private GAFMovieClip mov;
 
 	public bool underControl=true;
 	public LayerMask whatIsGround;
@@ -26,6 +28,7 @@ public class CharacterController : MonoBehaviour
 		wallCheck1=transform.FindChild ("WallCheck1").gameObject;
 		wallCheck2=transform.FindChild ("WallCheck2").gameObject;
 		wallCheck3=transform.FindChild ("WallCheck3").gameObject;
+		mov = transform.FindChild("NewHero").GetComponent<GAFMovieClip> ();
 		//controlCol=transform.FindChild ("ControlledCollider").gameObject;
 		//uncontrolCol=transform.FindChild ("UncontrolledCollider").gameObject;
 		lvlController = GameObject.FindGameObjectWithTag (Tags.controller).GetComponent<LevelController> ();
@@ -34,9 +37,9 @@ public class CharacterController : MonoBehaviour
 
 	public void FixedUpdate()//Здесь происходит анализ ситуации, в которой находится персонаж
 	{
-		if ((!wall) && (Mathf.Abs (rigid.velocity.x) <= speed - 1f)&&(!returning))
-			rigid.velocity = Vector2.Lerp (rigid.velocity, new Vector2 (speed * direction, rigid.velocity.y), 0.1f);
-		else if ((!wall)&&(!returning))
+		if ((!wall) && (Mathf.Abs (rigid.velocity.x) <= speed - 1f)&&(!returning)&&!(appearTime>0f))
+			rigid.velocity = Vector2.Lerp (rigid.velocity, new Vector2 (speed * direction, rigid.velocity.y), 0.15f);
+		else if ((!wall)&&(!returning)&&!(appearTime>0f))
 			rigid.velocity = new Vector2 (speed * direction, rigid.velocity.y);//Персонаж двигается здесь.
 		rigid.velocity = new Vector2 ((wall)? 0f: rigid.velocity.x, rigid.velocity.y);
 		wallAbove = Physics2D.OverlapCircle (wallCheck3.transform.position, grRadius, whatIsGround);
@@ -48,11 +51,37 @@ public class CharacterController : MonoBehaviour
 			ControlledActions ();
 		else 
 			UncontrolledActions ();
+		//Анимируем персонажа
+		if (returning)
+		{
+			//rigid.velocity=Vector2.Lerp (rigid.velocity, new Vector2 (0f, rigid.velocity.y), 0.05f);
+			mov.setSequence ("TimeTravel", true);
+			mov.setAnimationWrapMode(GAF.Core.GAFWrapMode.Once);
+		}
+		else if (appearTime > 0) {
+			mov.setSequence ("Appear", true);
+			mov.setAnimationWrapMode(GAF.Core.GAFWrapMode.Once);
+		}
+		else if ((grounded) && (Mathf.Abs (rigid.velocity.x) < 1)) {
+			mov.setSequence ("Stand", true);
+			mov.setAnimationWrapMode(GAF.Core.GAFWrapMode.Loop);
+		} 
+		else 
+		{
+			if (grounded)
+				mov.setSequence ("Run", true);
+			else if (rigid.velocity.y > 1f)
+				mov.setSequence ("Jump", true);
+			else if (rigid.velocity.y < -1f)
+				mov.setSequence ("Fall", true);
+		}
+
 	}
 
 	void Update()
 	{
-
+		if (appearTime > 0f)
+			appearTime -= Time.deltaTime;
 	}
 
 	void ControlledActions()//Что совершает персонаж, если он управляем игроком
@@ -64,21 +93,14 @@ public class CharacterController : MonoBehaviour
 		if  (grounded) 
 		{
 			bool jumping=false;
-			if (lvlController.andr)
-			{
-				if (Input.touchCount==1)
-				{
-					Touch touch=Input.GetTouch(0);
-					if (touch.phase==TouchPhase.Began)
-						jumping=true;
-				}
-			}
-			else if (Input.GetKeyDown(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.Space))
 				jumping=true;
-			if (jumping)
+			if ((jumping)||(jumping1))
 			{
 				rigid.AddForce (new Vector2 (0f, jumpForce));
 				WriteChronology	("Jump");	
+				jumping=false;
+				jumping1=false;
 			}
 		}
 		if (lvlController.timer>prevTime+lvlController.refreshTime)
@@ -204,5 +226,16 @@ public class CharacterController : MonoBehaviour
 	Vector2 VectorConverter(Vector3 vect)//функция для удобства
 	{
 		return new Vector2 (vect.x, vect.y);
+	}
+
+	public void SetJumping()
+	{
+		if (grounded)
+			jumping1 = true;
+	}
+
+	public void SetReturning()
+	{
+		returning = true;
 	}
 }

@@ -11,14 +11,16 @@ public class CameraRegulationScript : MonoBehaviour {
 
 	private float strength=0.2f;//как сильно можно менять параметры камеры при одном нажатии
 	private float nu;//nu - отношение боковых сторон камеры, которое мы хотим получить 		
-	private float offsetX=0.1f, offsetY=1.6f;
+	public float offsetX=3f, offsetY=2f;
+	private bool buttonsLocated = false;
 
 	public GameObject button1, button2;
 
 	private enum mods{x,y,size,width,height,x1,y1};
 	private bool vis;
-	
+
 	void Start () {
+		buttonsLocated = false;
 		Vector2 vect;
 		float k;
 		vis = true;
@@ -28,7 +30,9 @@ public class CameraRegulationScript : MonoBehaviour {
 		                 cam.transform.position.y-corner.transform.position.y);
 		if (PlayerPrefs.HasKey ("nu")) 
 		{
-			if (PlayerPrefs.GetFloat("nu")==0f)
+			float k1;
+			k1=PlayerPrefs.GetFloat("nu");
+			if (k1==0f)
 				PlayerPrefs.SetFloat("nu",vect.y / vect.x);
 		}
 		if (!PlayerPrefs.HasKey ("nu"))
@@ -53,6 +57,7 @@ public class CameraRegulationScript : MonoBehaviour {
 		{
 			cam.orthographicSize=PlayerPrefs.GetFloat("CameraSize");
 			LocateButtons ();
+			buttonsLocated=false;
 		}
 	}
 
@@ -77,7 +82,11 @@ public class CameraRegulationScript : MonoBehaviour {
 		}
 		if (vis) 
 		{
-			LocateButtons ();
+			if (!buttonsLocated)
+			{
+				LocateButtons ();
+				buttonsLocated=true;
+			}
 			sprite.enabled = false;
 			PlayerPrefs.SetFloat("CameraSize",cam.orthographicSize);
 			PlayerPrefs.SetFloat("nu", nu);
@@ -166,4 +175,5 @@ public class CameraRegulationScript : MonoBehaviour {
 			break;
 		}
 	}*/
+
 }

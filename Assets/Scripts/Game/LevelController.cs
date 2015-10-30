@@ -15,9 +15,10 @@ public class LevelController : MonoBehaviour {
 
 	public float refreshTime=1f;
 	public float revisionTime=2f;
-
+		
 	public float timer;
 	public GameObject[] anchors;
+	public Text timeText;
 	private int defaultAnchNumber;
 	public GameObject character;
 
@@ -31,7 +32,11 @@ public class LevelController : MonoBehaviour {
 	public bool andr;
 	public int anchNumb;
 
-	public bool what;
+	public Text numberText;//Вспомогательные элементы, помогающие определиться
+	private Text ttext;//Как правильно работать с текстом
+	private int doubleToChange;//дубль, начиная с которого переписывается история прохождения уровня
+	private GameObject interfacer, settings;//пользовательский интерфейс во время игры и  настройки
+	private GameObject activeWindow;
 
 	//Хронологические списки
 	/*public int doubleNumber;//Номер, для которого мы строим список
@@ -43,6 +48,20 @@ public class LevelController : MonoBehaviour {
 
 	void Start () 
 	{
+		//инициализируем элементы интерфейса
+		GameObject[] interfaces = GameObject.FindGameObjectsWithTag ("Interface");
+		for (int i=0;i<interfaces.Length;i++)
+		{
+			if (string.Equals(interfaces[i].name,"Interface"))
+				interfacer=interfaces[i];
+			else if (string.Equals(interfaces[i].name,"Settings"))
+				settings=interfaces[i];
+		}
+		settings.SetActive (false);
+		interfacer.SetActive (true);
+		activeWindow = interfacer;
+		doubleToChange = 0;//Если игрок откроет Settings, то ему по дефолту предложится начать уровень заново с нулевого уровня
+
 		if (PlayerPrefs.HasKey ("AnchNumber"))//где создавать главный дубль?
 			defaultAnchNumber=PlayerPrefs.GetInt("AnchNumber");
 		else 
@@ -63,7 +82,7 @@ public class LevelController : MonoBehaviour {
 		}
 		else
 			timer=PlayerPrefs.GetFloat("beginTime")-timeRecoil;
-		datapath = Application.dataPath + "SavedData" + Application.loadedLevelName + ".xml";
+		datapath = (Application.platform == RuntimePlatform.Android? Application.dataPath: Application.persistentDataPath) + "SavedData" + Application.loadedLevelName + ".xml";
 
 		if (PlayerPrefs.GetInt("NewLevel")==1)//Чтоб наверняка начать новый уровень сызнова-заново!!!
 		{
@@ -90,6 +109,7 @@ public class LevelController : MonoBehaviour {
 
 	void Update () {
 		timer += Time.deltaTime;//отсчёт времени
+		timeText.text = (Mathf.Round (timer*100f)/100f).ToString();
 		anchNumb=PlayerPrefs.GetInt("AnchNumber");
 		for (int i=0;i<appearances.Count;i++)//Здесь создаются временные клоны
 		{
@@ -114,9 +134,16 @@ public class LevelController : MonoBehaviour {
 		}
 
 		if (pause) //Сама пауза
+		{
 			Time.timeScale = 0f;
+			PauseSript();
+		}
 		else
+		{
 			Time.timeScale = 1f;
+			GameObject[] texts = GameObject.FindGameObjectsWithTag ("NumberText");
+			for (int i=0;i<texts.Length;i++) Destroy(texts[i]);
+		}
 		if (begin)//Здесь мы придём в прошлое
 		{
 			bool appear=false;
@@ -270,14 +297,25 @@ public class LevelController : MonoBehaviour {
 	{
 		GameObject[] doubles = GameObject.FindGameObjectsWithTag (Tags.character);
 		for (int i=0; i<doubles.Length; i++)
-			if (doubles [i].GetComponent<CharacterController> ().GetNumber () > number)
+		{
+			if (doubles [i].GetComponent<CharacterController> ().GetNumber () > number) 
+			{
 				Destroy (doubles [i]);
+				//doubles [i].GetComponent<CharacterController> ().SetReturning();
+			}
+		}
 		for (int i=chronology.chronology.Count-1; i>number; i--)
 		{
 			if (i<appearances.Count)
 				appearances.RemoveAt(i);
 			chronology.chronology.RemoveAt(i);
 
+		}
+		PlayerPrefs.SetFloat ("beginTime", 0f);
+		for (int i=0;i<appearances.Count;i++)
+		{
+			if (appearances[i].time<PlayerPrefs.GetFloat("beginTime"))
+				PlayerPrefs.SetFloat("beginTime", appearances[i].time);
 		}
 		for (int i=chronology.chronology[number].sequence.Count-1; i>paradox.GetActNumber(); i--)
 			chronology.chronology [number].sequence.RemoveAt (i);
@@ -286,18 +324,81 @@ public class LevelController : MonoBehaviour {
 		begin = false;
 	}
 
+	//Функции, навешиваемые на кнопки
 	public void Return()//функция, которая будет вызываться кнопкой на экране
 	{
-		if (!begin)
+		if ((!begin) && (!pause))
 			StartCoroutine(Restart (new Vector2(mainCharacter.position.x,mainCharacter.position.y)));
+
+		if (pause) 
+		{
+			activeWindow.SetActive(false);
+			activeWindow=settings;
+			activeWindow.SetActive(true);
+		}
 	}
 
+	//Выбираем, с какого дубля мы хотим переиграть уровень
+	public void ChangeRestartNumber()
+	{
+		doubleToChange++;
+		if (doubleToChange >= chronology.chronology.Count)
+			doubleToChange = 0;
+		Text text = settings.transform.FindChild ("ChangeClone").transform.FindChild ("Text").GetComponent<Text> ();
+		text.text = doubleToChange.ToString ();
+	}
+
+	public void ChangeHistory ()//Начинаем уровень заново с дубля под номером doubleToChange
+	{
+		for (int i=chronology.chronology.Count-1; i>=doubleToChange; i--)
+		{
+			if (i<appearances.Count)
+				appearances.RemoveAt(i);
+			chronology.chronology.RemoveAt(i);	
+		}
+		PlayerPrefs.SetFloat ("beginTime", 0f);
+		for (int i=0;i<appearances.Count;i++)
+		{
+			if (appearances[i].time<PlayerPrefs.GetFloat("beginTime"))
+				PlayerPrefs.SetFloat("beginTime", appearances[i].time);
+		}
+		PlayerPrefs.SetFloat("beginTime",PlayerPrefs.GetFloat("beginTime")+timeRecoil);
+		begin = false;
+		Serializator.SaveXml(chronology, datapath); 
+		Application.LoadLevel (Application.loadedLevel);
+	}
+
+	//Перемещаемся между окнами интерфейса
+	public void BackToMenu(string name)
+	{
+		activeWindow.SetActive (false);
+		if (string.Equals (name, "Interface"))
+			activeWindow = interfacer;
+		activeWindow.SetActive (true);
+	}
+	
 	public void Pause()//Тоже вызывается кнопкой паузы
 	{
 		pause = !pause;
+	}
+
+	//Если нажимаете на экран, то активный персонаж либо появляется, либо прыгает
+	public void MainAction()
+	{
+		if (begin)
+		{
+			if (timer<PlayerPrefs.GetFloat("beginTime"))
+				PlayerPrefs.SetFloat("beginTime",timer);
+			CreateDouble(chronology.chronology.Count);
+		}
+		else 
+		{
+			mainCharacter.gameObject.GetComponent<CharacterController>().SetJumping();
+		}
 
 	}
 
+	//Функция, которая поставит данный объект на то место, где он должен находиться в данное время, следуя своей хронологии
 	public Vector3 Locate(Vector3 prevPosition, int number, int actNumber)
 	{
 		return new Vector3 (chronology.chronology [number].sequence [actNumber].location.x,
@@ -305,11 +406,13 @@ public class LevelController : MonoBehaviour {
 		                   prevPosition.z);
 	}
 
+	//Так игрок отправляется в прошлое 
 	IEnumerator Restart(Vector2 location)//Отправиться в прошлое
 	{
 		TimeEvent tEvent = new TimeEvent(timer, location,"Return");
 		SetChronology (chronology.chronology.Count-1, tEvent);
-		Serializator.SaveXml(chronology, datapath); 
+		Serializator.SaveXml(chronology, datapath);
+		mainCharacter.gameObject.GetComponent<CharacterController> ().SetReturning ();
 		yield return new WaitForSeconds (0.5f);
 		Application.LoadLevel (Application.loadedLevel);
 	}
@@ -326,9 +429,31 @@ public class LevelController : MonoBehaviour {
 
 	void DeletePrefs()//при переходе на следующий уровень некоторые данные должны быть удалены
 	{
-		PlayerPrefs.DeleteKey("AnchNumber");
+		PlayerPrefs.SetInt("AnchNumber",0);
 		PlayerPrefs.DeleteKey("CameraSize");
-		PlayerPrefs.DeleteKey("nu");
-		PlayerPrefs.DeleteKey("beginTime");
+		PlayerPrefs.SetFloat("nu",0f);
+		PlayerPrefs.DeleteKey ("beginTime");
+		PlayerPrefs.DeleteKey("Anch0Active");
+		PlayerPrefs.DeleteKey("Anch1Active");
 	}
+	
+	void PauseSript()//Скрипт, который определяет, что происходит при паузе
+	{
+		GameObject[] doubles = GameObject.FindGameObjectsWithTag (Tags.character);
+		for (int i=0; i<doubles.Length; i++)
+		{
+			ttext=Instantiate(numberText,doubles[i].transform.position,doubles[i].transform.rotation) as Text;
+			ttext.transform.localScale=interfacer.transform.localScale;
+			ttext.transform.SetParent(interfacer.transform);
+			int numb=doubles[i].GetComponent<CharacterController>().GetNumber();
+			ttext.text=numb.ToString();
+			ttext.name="Number "+numb.ToString();
+			ttext.color=Color.white;
+			ttext.transform.position=new Vector3(ttext.transform.position.x+2f,
+			                                     ttext.transform.position.y+2f,
+			                                     ttext.transform.position.z);
+		}
+	}
+
+	//Когда скрипт достигнет 500 строк его следует разбить на мелкие кусочки кода
 }

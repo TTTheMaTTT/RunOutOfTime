@@ -8,6 +8,7 @@ public class ButtonScript : MonoBehaviour {
 	private Collider2D col;
 	private Collider2D doorCol;
 	private SpriteRenderer doorSprite;
+	private GameObject active, unactive; // Две анимации активной и неактивной кнопки
 	private List<GameObject> whoPushesMe=new List<GameObject>();//Список объектов, стоящих на кнопке
 
 	public GameObject door;
@@ -18,7 +19,8 @@ public class ButtonScript : MonoBehaviour {
 		doorCol = door.GetComponent<Collider2D> ();
 		doorSprite = door.GetComponent<SpriteRenderer> ();
 		doorCol.enabled = true;
-	
+		active=transform.FindChild("Button_Red_1").gameObject;
+		unactive=transform.FindChild("Button_Green").gameObject;
 	}
 
 	void Update () 
@@ -29,12 +31,14 @@ public class ButtonScript : MonoBehaviour {
 		if (whoPushesMe.Count>0)
 		{
 			doorCol.enabled = false;
-			doorSprite.enabled=false;
+			active.SetActive(false);
+			unactive.SetActive(true);
 		}
 		else
 		{
 			doorCol.enabled = true;
-			doorSprite.enabled=true;
+			active.SetActive(true);
+			unactive.SetActive(false);
 		}
 	}
 
